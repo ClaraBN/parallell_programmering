@@ -88,8 +88,11 @@ int main(int argc, char *argv[]) {
   // delete[] threads;
   //findPrime(ptr, sqrtMax, sqrtMax+1, max);
   // just to check the code
+  
   for(int i = 0; i < max; i++){
-      printf("Seed%d: %d\n", i, seed[i]);
+      if(seed[i]>0){
+          printf("Seed%d: %d\n", i, seed[i]);
+      } 
   };
 
   return 0;
