@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void findPrime(int *array){
+void findPrime(int *arraySeed, int *array){
 
 };
 
@@ -31,7 +31,15 @@ int main(int argc, char *argv[]) {
   int seed[sqrtMax];
   for(int i = 0; i < sqrtMax; i++){
       seed[i] = i+1;
-      printf("Seed: %d\n", seed[i]);
+      // printf("Seed: %d\n", seed[i]);
   };
+
+  int k = seed[1];
+  k=k+1;
+  
+  printf("Seed: %d\n k: %d\n", seed[i],k);
+
+
+
   return 0;
 };
