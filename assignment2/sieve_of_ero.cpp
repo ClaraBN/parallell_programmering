@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
       };
   };
   threads[0].join();
-  delete[] threads;
+  // delete[] threads;
   //findPrime(ptr, sqrtMax, sqrtMax+1, max);
   // just to check the code
   for(int i = 0; i < max; i++){
