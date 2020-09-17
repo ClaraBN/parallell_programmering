@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   int k = seed[1];
   k=k+1;
   
-  printf("Seed: %d\n k: %d\n", seed[i],k);
+  printf("Seed: %d\n k: %d\n", seed[1],k);
 
 
 
