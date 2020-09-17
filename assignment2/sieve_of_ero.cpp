@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   };
 
   // int max = stoi(argv[1]);
-  int max = 64;
+  int max = 19;
  
   int sqrtMax = int(sqrt(max));
   volatile int seed[max];
