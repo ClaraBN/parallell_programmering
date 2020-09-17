@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   while (nextUnmarked<=sqrtMax){
       for(int j=pow(unmarked,2); j <= sqrtMax; j++){
           if(unmarked%j == 0){
-              seed[j-1]=-j;
+              seed[j-1]=0-j;
           };
       };
       bool nextUpdated = 0;
