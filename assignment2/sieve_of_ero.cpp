@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
       };
   };
     // int numThreads = stoi(argv[2]);
-    int *ptr=seed;
+    volatile int *ptr=seed;
     findPrime(ptr, sqrtMax, sqrtMax+1, max);
     // just to check the code
     for(int i = 0; i < max; i++){
