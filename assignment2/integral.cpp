@@ -86,8 +86,8 @@ int main(int argc, char *argv[]) {
 
   //calculating the time
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-  cout << "Result: "<< result << "\n"; 
-  cout << "Duration: "<< duration << "\n";
+  cout << "Result: " << result << "\n"; 
+  cout << "Duration: " << duration << "\n";
 
   //threads[0].join();
 
