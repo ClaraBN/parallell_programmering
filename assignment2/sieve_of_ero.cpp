@@ -23,18 +23,17 @@ void findPrime(volatile int *array, int endSeed, int min, int max){
 
 int main(int argc, char *argv[]) {
     
-  if (argc != 2) {
+  if (argc != 3) {
     char h[] = {'-','h'};
     if (strcmp(argv[1], h) == 0) {
-      printf("%s\n","First argument is the number of threads (integer), the second argument is number of trapezes(integer) and trapezes should be a multiple of threads");
+      printf("%s\n","First argument is which integer to compute the primes to, the second argument is number of threads");
       return 0;
     };
     printf("%s\n", "invalid input. try -h for help");
     return 0;
   };
 
-  // int max = stoi(argv[1]);
-  int max = 19;
+  int max = stoi(argv[1]);
  
   int sqrtMax = int(sqrt(max));
   volatile int seed[max];
@@ -68,12 +67,29 @@ int main(int argc, char *argv[]) {
           break;
       };
   };
-    // int numThreads = stoi(argv[2]);
-    volatile int *ptr=seed;
-    findPrime(ptr, sqrtMax, sqrtMax+1, max);
-    // just to check the code
-    for(int i = 0; i < max; i++){
-       printf("Seed%d: %d\n", i, seed[i]);
-       };
+  int numThreads = stoi(argv[2]);
+  thread *threads = new thread[numThreads];
+  volatile int *ptr=seed;
+  
+  int bigChunk = max - sqrtMax;
+  int smallChunks = bigChunk/numThreads;
+  int lBound =sqrtMax+1;
+  int hBound =lBound+smallChunks; 
+  for (int threadID = 0; threadID < numThreads; threadID++){
+      threads[threadID] = thread(findPrime, ptr, sqrtMax, lBound, hBound);
+      lBound=hBound+1;
+      if (threadID == numThreads-2){
+          hBound=max;
+      }else{
+          hBound=lBound+smallChunks;
+      };
+  };
+  //findPrime(ptr, sqrtMax, sqrtMax+1, max);
+  // just to check the code
+  for(int i = 0; i < max; i++){
+      printf("Seed%d: %d\n", i, seed[i]);
+  };
+  threads[0].join();
+  delete[] threads;
   return 0;
 };
