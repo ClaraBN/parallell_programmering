@@ -30,8 +30,8 @@ int main(int argc, char *argv[]) {
   int sqrtMax = int(sqrt(max));
   int seed[sqrtMax];
   for(int i = 0; i < sqrtMax; i++){
-      seed[i] = i;
-      printf("%d Seed: \n",seed[i]);
+      seed[i] = i+1;
+      printf("Seed: %d\n", seed[i]);
   };
   return 0;
 };
