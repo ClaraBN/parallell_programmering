@@ -3,6 +3,7 @@
 # include <stdio.h>
 # include <math.h>
 # include <future>
+# include <string.h>
 
 using namespace std;
 
@@ -33,9 +34,12 @@ double compute(double x0, double x1, double tpt) {
 int main(int argc, char *argv[]) {
 
   if (argc != 3) {
-    if (argv[2] == "-h") {
-      printf("%s","First argument is the number of threads (integer), the second argument is number of trapezes(integer) and trapezes should be a multiple of threads");
+    char h[] = {'-','h'};
+    if (strcmp(argv[1], h) == 0) {
+      printf("%s\n","First argument is the number of threads (integer), the second argument is number of trapezes(integer) and trapezes should be a multiple of threads");
+      return 0;
     };
+    printf("%s\n", "invalid input. try -h for help");
     return 0;
   };
 
