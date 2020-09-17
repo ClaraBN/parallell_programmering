@@ -4,6 +4,7 @@
 # include <math.h>
 # include <future>
 # include <string.h>
+# include <chrono>
 
 using namespace std;
 
@@ -63,7 +64,7 @@ int main(int argc, char *argv[]) {
   //thread *threads = new thread[numThreads];
 
   future<double> futures[numThreads];
-
+  auto start_time = chrono::system_clock::now();
   for (int j = 0; j < numThreads; j++){
     futures[j] = async(compute, interval[j], interval[j+1], trapzPerThread);
   };
@@ -82,8 +83,11 @@ int main(int argc, char *argv[]) {
     //};
 
   //double result = threads[0].get();
-  
-  cout << result << "\n";
+
+  //calculating the time
+  chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
+  cout << "Result: "<< result << "\n"; 
+  cout << "Duration: "<< duration << "\n";
 
   //threads[0].join();
 
