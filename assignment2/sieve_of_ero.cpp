@@ -34,12 +34,31 @@ int main(int argc, char *argv[]) {
       // printf("Seed: %d\n", seed[i]);
   };
 
-  int k = seed[1];
-  k=k+1;
-  
-  printf("Seed: %d\n k: %d\n", seed[1],k);
-
-
+  int unmarked = seed[1];
+  int nextUnmarked = 0;
+  while (nextUnmarked<=sqrtMax){
+      for(int j=pow(unmarked,2); j <= sqrtMax; j++){
+          if(unmarked%j == 0){
+              seed[j-1]=-j;
+          };
+      };
+      bool nextUpdated = 0;
+      for(int index = unmarked; index <= sqrtMax; index++){
+          if(seed[index]>0){
+              nextUnmarked=seed[index];
+              unmarked=nextUnmarked;
+              nextUpdated = 1;
+              break;
+          };
+      };
+      if(!nextUpdated){
+          break;
+      };
+  };
+  // just to check the code
+    for(int i = 0; i < sqrtMax; i++){
+      printf("Seed%d: %d\n", i, seed[i]);
+  };
 
   return 0;
 };
