@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   int nextUnmarked = 0;
   while (nextUnmarked<=sqrtMax){
       for(int j=pow(unmarked,2); j <= sqrtMax; j++){
-          if(unmarked%j == 0){
+          if(j%unmarked == 0){
               seed[j-1]=0-j;
               printf("%s\n", "hej!");
           };
