@@ -72,9 +72,9 @@ int main(int argc, char *argv[]) {
   double result = 0;
   for (int j = 0; j < numThreads; j++){
     double n = futures[j].get();
-    cout << n << "\n";
+    // cout << n << "\n";
     result = result + n;
-    cout << result << "\n";
+    // cout << result << "\n";
   };
 
 
