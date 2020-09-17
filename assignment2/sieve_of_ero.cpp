@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void findPrime(int *array, int endSeed, int min, int max){
+void findPrime(volatile int *array, int endSeed, int min, int max){
     //int unmarked=0;
     for(int seedEl=2; seedEl <= endSeed; seedEl++){
         if(seedEl>0){
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
       };
   };
     // int numThreads = stoi(argv[2]);
-    volatile int *ptr=seed;
+    int *ptr=seed;
     findPrime(ptr, sqrtMax, sqrtMax+1, max);
     // just to check the code
     for(int i = 0; i < max; i++){
