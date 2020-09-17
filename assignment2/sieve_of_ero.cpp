@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   };
 
   // int max = stoi(argv[1]);
-  int max = 25;
+  int max = 64;
  
   int sqrtMax = int(sqrt(max));
   int seed[sqrtMax];
