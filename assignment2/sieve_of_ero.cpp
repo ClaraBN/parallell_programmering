@@ -84,12 +84,13 @@ int main(int argc, char *argv[]) {
           hBound=lBound+smallChunks;
       };
   };
+  threads[0].join();
+  delete[] threads;
   //findPrime(ptr, sqrtMax, sqrtMax+1, max);
   // just to check the code
   for(int i = 0; i < max; i++){
       printf("Seed%d: %d\n", i, seed[i]);
   };
-  threads[0].join();
-  delete[] threads;
+
   return 0;
 };
