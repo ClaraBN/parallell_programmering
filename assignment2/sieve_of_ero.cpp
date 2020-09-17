@@ -34,7 +34,9 @@ int main(int argc, char *argv[]) {
   };
 
   int max = stoi(argv[1]);
+  int numThreads = stoi(argv[2]);
  
+  // making the complete array
   int sqrtMax = int(sqrt(max));
   volatile int seed[max];
   for(int i = 0; i < max; i++){
@@ -45,6 +47,17 @@ int main(int argc, char *argv[]) {
   seed[0]=-1;
   int unmarked = seed[1];
   int nextUnmarked = 0;
+  
+  thread *threads = new thread[numThreads];
+  volatile int *ptr=seed;
+  
+  int bigChunk = max - sqrtMax;
+  int smallChunks = bigChunk/numThreads;
+  int lBound =sqrtMax+1;
+  int hBound =lBound+smallChunks; 
+  
+  // actually calculating the primes
+  auto start_time = chrono::system_clock::now();
   while (nextUnmarked<=sqrtMax){
       for(int j=pow(unmarked,2); j <= sqrtMax; j++){
           if(j%unmarked == 0){
@@ -67,14 +80,7 @@ int main(int argc, char *argv[]) {
           break;
       };
   };
-  int numThreads = stoi(argv[2]);
-  thread *threads = new thread[numThreads];
-  volatile int *ptr=seed;
-  
-  int bigChunk = max - sqrtMax;
-  int smallChunks = bigChunk/numThreads;
-  int lBound =sqrtMax+1;
-  int hBound =lBound+smallChunks; 
+
   for (int threadID = 0; threadID < numThreads; threadID++){
       threads[threadID] = thread(findPrime, ptr, sqrtMax, lBound, hBound);
       lBound=hBound+1;
@@ -85,15 +91,19 @@ int main(int argc, char *argv[]) {
       };
   };
   threads[0].join();
+  //calculating the time
+  chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
   // delete[] threads;
   //findPrime(ptr, sqrtMax, sqrtMax+1, max);
   // just to check the code
   
+  int primeNumbers=0;
   for(int i = 0; i < max; i++){
       if(seed[i]>0){
-          printf("Seed: %d\n", seed[i]);
+          primeNumbers++;   
       } 
   };
 
+  printf("Number of primes: %d\nRuntime: %f\n",primeNumbers, duration.count());
   return 0;
 };
