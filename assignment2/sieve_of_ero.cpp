@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
       for(int j=pow(unmarked,2); j <= sqrtMax; j++){
           if(unmarked%j == 0){
               seed[j-1]=0-j;
+              printf("%s\n", "hej!");
           };
       };
       bool nextUpdated = 0;
@@ -48,10 +49,12 @@ int main(int argc, char *argv[]) {
               nextUnmarked=seed[index];
               unmarked=nextUnmarked;
               nextUpdated = 1;
+              printf("Index: %d\n", index);
               break;
           };
       };
       if(!nextUpdated){
+          printf("%s\n", "då!");
           break;
       };
   };
