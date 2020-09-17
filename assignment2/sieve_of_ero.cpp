@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
       // printf("Seed: %d\n", seed[i]);
   };
 
+  seed[0]=-1;
   int unmarked = seed[1];
   int nextUnmarked = 0;
   while (nextUnmarked<=sqrtMax){
