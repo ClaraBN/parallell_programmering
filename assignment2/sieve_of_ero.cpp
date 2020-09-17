@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
   int seed[sqrtMax];
   for(int i = 0; i < sqrtMax; i++){
       seed[i] = i;
+      printf("%d Seed: \n",seed[i]);
   };
   return 0;
 };
