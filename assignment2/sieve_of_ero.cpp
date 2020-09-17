@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
   
   for(int i = 0; i < max; i++){
       if(seed[i]>0){
-          printf("Seed%d: %d\n", i, seed[i]);
+          printf("Seed: %d\n", seed[i]);
       } 
   };
 
