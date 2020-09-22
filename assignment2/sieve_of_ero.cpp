@@ -90,7 +90,11 @@ int main(int argc, char *argv[]) {
           hBound=lBound+smallChunks;
       };
   };
-  threads[0].join();
+
+  for(int i = 0; i<numThreads; i++){
+      threads[i].join();
+  }
+  
   //calculating the time
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
   // delete[] threads;
