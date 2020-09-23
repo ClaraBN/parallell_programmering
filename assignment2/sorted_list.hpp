@@ -18,7 +18,7 @@ struct node {
 template<typename T>
 class sorted_list {
 	node<T>* first = nullptr;
-	// std::mutex coarse_mutex;
+	std::mutex coarse_mutex;
 
 	public:
 		/* default implementations:
@@ -43,7 +43,7 @@ class sorted_list {
 		}
 		/* insert v into the list */
 		void insert(T v) {
-			// coarse_mutex.lock();
+			coarse_mutex.lock();
 			/* first find position */
 			node<T>* pred = nullptr;
 			node<T>* succ = first;
@@ -63,12 +63,12 @@ class sorted_list {
 			} else {
 				pred->next = current;
 			}
-			// coarse_mutex.unlock();
+			coarse_mutex.unlock();
 		}
 
 		void remove(T v) {
 			/* first find position */
-			// coarse_mutex.lock();
+			coarse_mutex.lock();
 			node<T>* pred = nullptr;
 			node<T>* current = first;
 			while(current != nullptr && current->value < v) {
@@ -77,7 +77,7 @@ class sorted_list {
 			}
 			if(current == nullptr || current->value != v) {
 				/* v not found */
-				// coarse_mutex.unlock();
+				coarse_mutex.unlock();
 				return;
 			}
 			/* remove current */
@@ -87,12 +87,12 @@ class sorted_list {
 				pred->next = current->next;
 			}
 			delete current;
-			// coarse_mutex.unlock();
+			coarse_mutex.unlock();
 		}
 
 		/* count elements with value v in the list */
 		std::size_t count(T v) {
-			// coarse_mutex.lock();
+			coarse_mutex.lock();
 			std::size_t cnt = 0;
 			/* first go to value v */
 			node<T>* current = first;
@@ -104,7 +104,7 @@ class sorted_list {
 				cnt++;
 				current = current->next;
 			}
-			// coarse_mutex.unlock();
+			coarse_mutex.unlock();
 			return cnt;
 			
 		}
