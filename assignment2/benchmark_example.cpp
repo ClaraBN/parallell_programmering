@@ -3,6 +3,7 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <mutex>
 
 #include "benchmark.hpp"
 #include "sorted_list.hpp"
