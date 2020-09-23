@@ -8,6 +8,7 @@
 /* struct for list nodes */
 template<typename T>
 struct node {
+	std::mutex fine_mutex;
 	T value;
 	node<T>* next;
 };
@@ -16,7 +17,7 @@ struct node {
 template<typename T>
 class sorted_list {
 	node<T>* first = nullptr;
-	std::mutex fine_mutex;
+	
 
 	public:
 		/* default implementations:
@@ -44,10 +45,15 @@ class sorted_list {
 			
 			/* first find position */
 			node<T>* pred = nullptr;
+			first->fine_mutex.lock();
 			node<T>* succ = first;
+			first->fine_mutex.unlock();
+
 			while(succ != nullptr && succ->value < v) {
+				succ->fine_mutex.lock();
 				pred = succ;
 				succ = succ->next;
+				succ->fine_mutex.unlock();
 			}
 			
 			/* construct new node */
@@ -55,12 +61,19 @@ class sorted_list {
 			current->value = v;
 
 			/* insert new node between pred and succ */
+			succ->fine_mutex.lock();
 			current->next = succ;
+			succ->fine_mutex.unlock();
 			if(pred == nullptr) {
+				first->fine_mutex.lock();
 				first = current;
+				first->fine_mutex.unlock();
 			} else {
+				pred->fine_mutex.lock();
 				pred->next = current;
+				pred->fine_mutex.unlock();
 			}
+			
 			
 		}
 
