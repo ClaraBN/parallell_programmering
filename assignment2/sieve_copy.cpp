@@ -5,6 +5,7 @@
 # include <future>
 # include <string.h>
 # include <chrono>
+# include <list>
 
 using namespace std;
 
@@ -35,17 +36,22 @@ int main(int argc, char *argv[]) {
 
   int max = stoi(argv[1]);
   int numThreads = stoi(argv[2]);
- 
-  // making the complete array
   int sqrtMax = int(sqrt(max));
-  volatile int seed[max];
-  for(int i = 0; i < max; i++){
-      seed[i] = i+1;
-      // printf("Seed: %d\n", seed[i]);
+  
+  // making the complete list
+  list<int> seed;
+  for (int i = 0; i < max; i++){
+      seed.push_back(i+1);
   };
-
-  seed[0]=-1;
-  int unmarked = seed[1];
+  // setting the first value in seed to -1
+  seed.front() = -1;
+  // made an iterator to interate through the list
+  list<int>::iterator it;
+  // it is pointed at the beginning of the list
+  it = seed.begin();
+  // it is now pointing to the second value in the list
+  advance(it, 1);
+  int unmarked = *it;
   int nextUnmarked = 0;
   
   thread *threads = new thread[numThreads];
