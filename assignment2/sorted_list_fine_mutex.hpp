@@ -14,7 +14,7 @@ struct node {
 
 template<typename T>
 struct MyHash{
-    std::size_t operator()(node) const noexcept{
+    std::size_t operator()(node<T>*) const noexcept{
         std::size_t h1 = std::hash<std::string>{}(node.value);
         std::size_t h2 = std::hash<std::string>{}(node.next);
         return h1 ^ (h2 << 1); 
