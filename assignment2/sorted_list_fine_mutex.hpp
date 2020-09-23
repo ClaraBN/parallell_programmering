@@ -8,9 +8,17 @@
 /* struct for list nodes */
 template<typename T>
 struct node {
-	std::mutex fine_mutex;
 	T value;
 	node<T>* next;
+};
+
+template<typename T>
+struct MyHash{
+    std::size_t operator()(node) const noexcept{
+        std::size_t h1 = std::hash<std::string>{}(node.value);
+        std::size_t h2 = std::hash<std::string>{}(node.next);
+        return h1 ^ (h2 << 1); 
+    }
 };
 
 /* non-concurrent sorted singly-linked list */
@@ -45,15 +53,15 @@ class sorted_list {
 			
 			/* first find position */
 			node<T>* pred = nullptr;
-			first->fine_mutex.lock();
+			// first->fine_mutex.lock();
 			node<T>* succ = first;
-			first->fine_mutex.unlock();
+			// first->fine_mutex.unlock();
 
 			while(succ != nullptr && succ->value < v) {
-				succ->fine_mutex.lock();
+				// succ->fine_mutex.lock();
 				pred = succ;
 				succ = succ->next;
-				succ->fine_mutex.unlock();
+				// succ->fine_mutex.unlock();
 			}
 			
 			/* construct new node */
@@ -61,22 +69,22 @@ class sorted_list {
 			current->value = v;
 
 			/* insert new node between pred and succ */
-			succ->fine_mutex.lock();
+			// succ->fine_mutex.lock();
 			current->next = succ;
-			succ->fine_mutex.unlock();
+			// succ->fine_mutex.unlock();
 			
 			if(pred == nullptr) {
 				/* I detta fall är first och succ samma för vi vill sätta in i början av listan,
 				kan man låsa två ggr efter varandra? eller är succ en kopia av first och därmed sitt egna mutex? */
-				first->fine_mutex.lock();
+				// first->fine_mutex.lock();
 				first = current;
-				first->fine_mutex.unlock();
+				// first->fine_mutex.unlock();
 			} else {
-				pred->fine_mutex.lock();
+				// pred->fine_mutex.lock();
 				pred->next = current;
-				pred->fine_mutex.unlock();
+				// pred->fine_mutex.unlock();
 			}
-			
+			cout << MyHash{}(current) << "hopefully hash for current\n" << MyHash{}(succ) << "hopefully hash for succ\n"
 			
 		}
 
@@ -91,17 +99,17 @@ class sorted_list {
 			
 			node<T>* pred = nullptr;
 			// lock
-			first->fine_mutex.lock();
+			// first->fine_mutex.lock();
 			node<T>* current = first;
 			// unlock
-			first->fine_mutex.unlock();
+			// first->fine_mutex.unlock();
 			while(current != nullptr && current->value < v) {
 				// lock
-				current->fine_mutex.lock();
+				// current->fine_mutex.lock();
 				pred = current;
 				current = current->next;
 				// unlock
-				current->fine_mutex.unlock();
+				// current->fine_mutex.unlock();
 			}
 			if(current == nullptr || current->value != v) {
 				/* v not found */
@@ -115,18 +123,18 @@ class sorted_list {
 			   detta som en tanke utifall det är problem längre fram.. (^_^;)*/
 			if(pred == nullptr) {
 				// lock
-				current->next->fine_mutex.lock();
+				// current->next->fine_mutex.lock();
 				first = current->next;
 				// unlock
-				current->next->fine_mutex.unlock();
+				// current->next->fine_mutex.unlock();
 			} else {
 				// lock (times two)
-				pred->fine_mutex.lock();
-				current->next->fine_mutex.lock();
+				// pred->fine_mutex.lock();
+				// current->next->fine_mutex.lock();
 				pred->next = current->next;
 				// unlock (times two)
-				current->next->fine_mutex.unlock();
-				pred->fine_mutex.unlock();
+				// current->next->fine_mutex.unlock();
+				// pred->fine_mutex.unlock();
 			}
 			delete current;
 			
@@ -137,21 +145,21 @@ class sorted_list {
 			
 			std::size_t cnt = 0;
 			/* first go to value v */
-			first->fine_mutex.lock();
+			// first->fine_mutex.lock();
 			node<T>* current = first;
-			first->fine_mutex.unlock();
+			// first->fine_mutex.unlock();
 			while(current != nullptr && current->value < v) {
 				/* jag låser curren->next eftersom det är den vi inte har gjort något med ännu*/
-				current->next->fine_mutex.lock();
+				// current->next->fine_mutex.lock();
 				current = current->next;
-				current->next->fine_mutex.unlock();
+				// current->next->fine_mutex.unlock();
 			}
 			/* count elements */
 			while(current != nullptr && current->value == v) {
 				cnt++;
-				current->next->fine_mutex.lock();
+				// current->next->fine_mutex.lock();
 				current = current->next;
-				current->next->fine_mutex.unlock();
+				// current->next->fine_mutex.unlock();
 			}
 			
 			return cnt;
