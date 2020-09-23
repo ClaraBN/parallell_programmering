@@ -63,8 +63,10 @@ class sorted_list {
 			/* insert new node between pred and succ */
 			succ->fine_mutex.lock();
 			current->next = succ;
-			succ->fine_mutex.unlock();
+			
 			if(pred == nullptr) {
+				/* I detta fall är first och succ samma för vi vill sätta in i början av listan,
+				kan man låsa två ggr efter varandra? eller är succ en kopia av first och därmed sitt egna mutex? */
 				first->fine_mutex.lock();
 				first = current;
 				first->fine_mutex.unlock();
@@ -73,29 +75,57 @@ class sorted_list {
 				pred->next = current;
 				pred->fine_mutex.unlock();
 			}
-			
+			succ->fine_mutex.unlock();
 			
 		}
 
 		void remove(T v) {
 			/* first find position */
+
+			/*                                                                     */
+			/* Jag har börjat här XP jag har skrivit kommentarer vi varje (un)lock */
+			/*          men även lämnat en kommentar över en tanke ovan ^          */
+			/*                                                                     */
+
 			
 			node<T>* pred = nullptr;
+			// lock
+			first->fine_mutex.lock();
 			node<T>* current = first;
+			// unlock
+			first->fine_mutex.unlock();
 			while(current != nullptr && current->value < v) {
+				// lock
+				current->fine_mutex.lock();
 				pred = current;
 				current = current->next;
+				// unlock
+				current->fine_mutex.unlock();
 			}
 			if(current == nullptr || current->value != v) {
 				/* v not found */
-				
 				return;
 			}
 			/* remove current */
+
+			/* om jag fattat rätt sker if-satsen bara om vi raderar en lista där
+			   önskat värde är första värdet, så vi borde bara låsa current->next. 
+			   men om insert sätter in en innan first, kan det skapa problem? Lämnar 
+			   detta som en tanke utifall det är problem längre fram.. (^_^;)*/
 			if(pred == nullptr) {
+				// lock
+				current->next->fine_mutex.lock();
 				first = current->next;
+				// unlock
+				current->next->fine_mutex.unlock();
 			} else {
+				// lock (times two)
+				pred->fine_mutex.lock();
+				current->next->fine_mutex.lock();
 				pred->next = current->next;
+				// unlock (times two)
+				current->next->fine_mutex.unlock();
+				pred->fine_mutex.unlock();
 			}
 			delete current;
 			
@@ -106,14 +136,21 @@ class sorted_list {
 			
 			std::size_t cnt = 0;
 			/* first go to value v */
+			first->fine_mutex.lock();
 			node<T>* current = first;
+			first->fine_mutex.unlock();
 			while(current != nullptr && current->value < v) {
+				/* jag låser curren->next eftersom det är den vi inte har gjort något med ännu*/
+				current->next->fine_mutex.lock();
 				current = current->next;
+				current->next->fine_mutex.unlock();
 			}
 			/* count elements */
 			while(current != nullptr && current->value == v) {
 				cnt++;
+				current->next->fine_mutex.lock();
 				current = current->next;
+				current->next->fine_mutex.unlock();
 			}
 			
 			return cnt;
