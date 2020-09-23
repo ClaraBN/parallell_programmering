@@ -63,6 +63,7 @@ class sorted_list {
 			/* insert new node between pred and succ */
 			succ->fine_mutex.lock();
 			current->next = succ;
+			succ->fine_mutex.unlock();
 			
 			if(pred == nullptr) {
 				/* I detta fall är first och succ samma för vi vill sätta in i början av listan,
@@ -75,7 +76,7 @@ class sorted_list {
 				pred->next = current;
 				pred->fine_mutex.unlock();
 			}
-			succ->fine_mutex.unlock();
+			
 			
 		}
 
