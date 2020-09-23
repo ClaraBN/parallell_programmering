@@ -13,10 +13,10 @@ struct node {
 };
 
 template<typename T>
-struct MyHash{
+struct MyHash {
     std::size_t operator()(node<T>* const& n) const noexcept{
-        std::size_t h1 = std::hash<std::string>{}(n.value);
-        std::size_t h2 = std::hash<std::string>{}(n.next);
+        std::size_t h1 = std::hash<T>{}(n->value);
+        std::size_t h2 = std::hash<node<T>*>{}(n->next);
         return h1 ^ (h2 << 1); 
     }
 };
@@ -84,7 +84,7 @@ class sorted_list {
 				pred->next = current;
 				// pred->fine_mutex.unlock();
 			}
-			std::cout << MyHash{}(current) << "hopefully hash for current\n" << MyHash{}(succ) << "hopefully hash for succ\n"
+			std::cout << MyHash<T>{}(current) << "hopefully hash for current\n" << MyHash<T>{}(succ) << "hopefully hash for succ\n";
 			
 		}
 
