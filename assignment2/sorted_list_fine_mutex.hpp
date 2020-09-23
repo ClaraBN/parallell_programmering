@@ -84,7 +84,7 @@ class sorted_list {
 				pred->next = current;
 				// pred->fine_mutex.unlock();
 			}
-			cout << MyHash{}(current) << "hopefully hash for current\n" << MyHash{}(succ) << "hopefully hash for succ\n"
+			std::cout << MyHash{}(current) << "hopefully hash for current\n" << MyHash{}(succ) << "hopefully hash for succ\n"
 			
 		}
 
