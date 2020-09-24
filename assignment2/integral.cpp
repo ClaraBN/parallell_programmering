@@ -110,17 +110,17 @@ int main(int argc, char *argv[]) {
     if(i == numThreads){
       interval[i] = trapz - interval[i-1];
       sum = sum + (trapz - interval[i-1]);
-      printf("%d: %f\n", i, interval[i]);
+      printf("%d: %f\n\n", i, interval[i]);
 
-    }else if (sum < (trapz-numThreads-1)){
+    }else if ((sum+step) < (trapz-numThreads-1)){
       interval[i] = interval[i-1] + step;
       sum = sum + (interval[i-1] + step);
-      printf("%d: %f\n", i, interval[i]);
+      printf("%d: %f\n\n", i, interval[i]);
 
     }else{
       interval[i] = 1;
       sum = sum + 1;
-      printf("%d: %f\n", i, interval[i]);
+      printf("%d: %f\n\n", i, interval[i]);
     };
   };
   // starting timer
