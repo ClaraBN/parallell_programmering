@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
   int trapzMax = trapz-numThreads+1;
   
   for (int i = 1; i <= numThreads; i++) {
-    double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
+    double perc = ( rand()%50 )/100.0 + 0.01; // in the range 0.01 to 0.5
     int step = int(perc*(trapz-sum));
     printf("\nStep: %d\n",step);
     printf("Sum: %d\n", sum);
