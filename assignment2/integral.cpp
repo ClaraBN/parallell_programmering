@@ -44,8 +44,6 @@ int main(int argc, char *argv[]) {
     return 0;
   };
 
-
-  
   int numThreads = stoi(argv[1]);
   int trapz = stoi(argv[2]);
 
@@ -56,10 +54,7 @@ int main(int argc, char *argv[]) {
   
   for (int i = 1; i <= numThreads; i++) {
     interval[i] = interval[i-1] + intervalStep;
-    //printf("%f\n", interval[i]);
-
   };
-
 
   //thread *threads = new thread[numThreads];
 
@@ -72,9 +67,7 @@ int main(int argc, char *argv[]) {
   double result = 0;
   for (int j = 0; j < numThreads; j++){
     double n = futures[j].get();
-    // cout << n << "\n";
     result = result + n;
-    // cout << result << "\n";
   };
 
 
