@@ -105,23 +105,23 @@ int main(int argc, char *argv[]) {
   for (int i = 1; i <= numThreads; i++) {
     double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
     int step = int(perc*(trapzMax-sum));
-    printf("\nStep: %f\n",step);
-    printf("Sum: %f\n", sum);
+    printf("\nStep: %d\n",step);
+    printf("Sum: %d\n", sum);
 
     if(i == numThreads){
       interval[i] = trapz - sum;
       sum = sum + (trapz - sum);
-      printf("%d: %f\n\n", i, interval[i]);
+      printf("%d: %d\n\n", i, interval[i]);
 
     }else if ((sum+step) < trapzMax){
       interval[i] = interval[i-1] + step;
       sum = sum + (interval[i-1] + step);
-      printf("%d: %f\n\n", i, interval[i]);
+      printf("%d: %d\n\n", i, interval[i]);
 
     }else{
       interval[i] = 1;
       sum = sum + 1;
-      printf("%d: %f\n\n", i, interval[i]);
+      printf("%d: %d\n\n", i, interval[i]);
     };
   };
   // starting timer
