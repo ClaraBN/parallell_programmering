@@ -52,22 +52,23 @@ int main(int argc, char *argv[]) {
   // making all the threads
   future<double> futures[numThreads];
 
+  // Calculating the intervals needed between 0 and 1 depending on munber of threads
+  double intervalStep = 1/double(numThreads);
+
 
         /*        ************************         */
         /*           EQUAL DISTRIBUTION            */
         /*        ************************         */
 
 
-  // Calculate how to distrubute trapz per threads
+  // Calculate how to distrubute trapz per threads 
   double trapzPerThread = trapz/numThreads;
-  double intervalStep = 1/double(numThreads);
   
   // saving the interval into an array
   double interval[int(trapzPerThread)];
   interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
     interval[i] = interval[i-1] + intervalStep;
-    printf("interval: %f", interval[i]);
   };
 
   // starting timer
@@ -95,15 +96,15 @@ int main(int argc, char *argv[]) {
   /*   *************************************   */
 
 
-  // Calculate how to distrubute trapz per threads
-  int trapezes[numThreads];
-  trapezes[0] = 0;
-  int sum = 0;
-  int trapzMax = trapz-numThreads+1;
+  // Calculate how to distrubute trapz per threads "randomly-ish"
+  // each thread will have at least one trapezes
+  double trapezes[numThreads];
+  double sum = 0;
+  double trapzMax = trapz-numThreads+1;
   
-  for (int i = 1; i <= numThreads; i++) {
+  for (int i = 0; i < numThreads; i++) {
     double perc = ( rand()%10 )/100.0 + 0.01; // in the range 0.01 to 0.1
-    int step = int(perc*(trapz-sum));
+    double step = int(perc*(trapz-sum));
 
     if(i == numThreads){
       trapezes[i] = trapz;
@@ -113,26 +114,24 @@ int main(int argc, char *argv[]) {
       sum = sum + step;
 
     }else{
-      trapezes[i] = 1;
-      sum = sum + 1;
+      trapezes[i] = 1.0;
+      sum = sum + 1.0;
     };
     printf("\ntrapezes %d: %d\n",i, trapezes[i]);
   };      
 
-  // saving the random intervals into an array
- 
+  // saving the intervals into an array
   interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
     interval[i] = interval[i-1] + intervalStep;
-    printf("interval: %f", interval[i]);
   };
   // starting timer
   //auto start_time = chrono::system_clock::now();
 
   // for each thread run "compute"
-  //for (int j = 0; j < numThreads; j++){
-    //futures[j] = async(compute, interval[j], interval[j+1], trapzPerThread);
-  //};
+  for (int j = 0; j < numThreads; j++){
+    futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
+  };
   // sum all the threads results into a result 
 
   //calculating the runtime and write out tut to the terminal
