@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
   };
 
   //calculating the runtime and write out to the terminal
-  chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time3);
+  chrono::duration<double> duration3 = (chrono::system_clock::now() - start_time3);
   cout << "\nAll threads have only one trapeze, except the first who have all the rest: \n" << "Result: " << result << "\n" << "Duration: " << duration3.count() << endl;
 
 
