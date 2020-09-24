@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
  /*   ******************************************************   */
 
 
-  // All trapezes in one thread in the beginning, almost. 
+  // Almost al trapezes is in the first thread 
   // Each thread will have at least one trapeze
   sum = 0;
   trapzMax = trapz-numThreads+1;
