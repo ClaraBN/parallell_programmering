@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
   // saving the interval into an array
   for (int i = 1; i <= numThreads; i++) {
     double random = rand() % 1 + 0.01; // in the range 0.01 to 1
-    cout << random << endl
+    printf("%f\n", random);
   };
   // starting timer
   //auto start_time = chrono::system_clock::now();
