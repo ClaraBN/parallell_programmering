@@ -113,16 +113,19 @@ int main(int argc, char *argv[]) {
       intervals[i] = trapz - sum;
       sum = sum + (trapz - sum);
       printf("%d: %d\n\n", i, intervals[i]);
+      printf("Sum: %d\n", sum);
 
     }else if ((sum+step) < trapzMax){
       intervals[i] = intervals[i-1] + step;
       sum = sum + (intervals[i-1] + step);
       printf("%d: %d\n\n", i, intervals[i]);
+      printf("Sum: %d\n", sum);
 
     }else{
       intervals[i] = 1;
       sum = sum + 1;
       printf("%d: %d\n\n", i, intervals[i]);
+      printf("Sum: %d\n", sum);
     };
   };
   // starting timer
