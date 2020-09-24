@@ -109,8 +109,8 @@ int main(int argc, char *argv[]) {
     printf("Sum: %f\n", sum);
 
     if(i == numThreads){
-      interval[i] = trapz - interval[i-1];
-      sum = sum + (trapz - interval[i-1]);
+      interval[i] = trapz - sum;
+      sum = sum + (trapz - sum);
       printf("%d: %f\n\n", i, interval[i]);
 
     }else if ((sum+step) < trapzMax){
