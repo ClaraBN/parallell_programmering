@@ -5,28 +5,59 @@
 # include <future>
 # include <string.h>
 # include <chrono>
+# include <vector>
 
 using namespace std;
 
-void findPrime(volatile int *array, int endSeed, int min, int max){
-    //int unmarked=0;
-    for(int seedEl=2; seedEl <= endSeed; seedEl++){
-        if(seedEl>0){
-            for(int chunkEl = min; chunkEl <= max; chunkEl++){
-                if(chunkEl%seedEl==0 && chunkEl>0){
-                    array[chunkEl-1]=-chunkEl;
-                };
-            };
-        };
+vector<int> findPrime(vector<int> seed, int endSeed, int min, int max){
+  vector<int> chunk;
+
+  for (int i = min; i <= max; i++){
+    chunk.push_back(i);
+  };
+  
+  
+  for(unsigned int i = 0; i < seed.size(); i++){
+    for (unsigned int j = 0; j < chunk.size(); j++){
+      if (chunk[j]%seed[i] == 0 && chunk[j]>0){
+	chunk[j] = -chunk[j];	
+      };
     };
+  };
+
+  vector<int> realchunk;
+  for (unsigned int i = 0; i < chunk.size(); i++){
+    if (chunk[i] > 0){
+      realchunk.push_back(chunk[i]);
+    };
+  };
+
+  //**********    END   **********
+  //  int unmarked=0;
+  //  for(int seedEl=2; seedEl <= endSeed; seedEl++){
+  //      if(seedEl>0){
+  //          for(int chunkEl = min; chunkEl <= max; chunkEl++){
+  //              if(chunkEl%seedEl==0 && chunkEl>0){
+  //                  chunk[chunkEl-1]=-chunkEl;
+  //              };
+  //         };
+  //     };
+  // };
+  return realchunk;
 };
+
+
+
+
+
+
 
 int main(int argc, char *argv[]) {
     
   if (argc != 3) {
     char h[] = {'-','h'};
     if (strcmp(argv[1], h) == 0) {
-      printf("%s\n","First argument is which integer to compute the primes to, the second argument is number of threads");
+      printf("%s\n","First argument is which integer to compute the primes to, the second argument is number of threads, the integer cannot be lower than 4 or that the number of theads");
       return 0;
     };
     printf("%s\n", "invalid input. try -h for help");
@@ -35,79 +66,87 @@ int main(int argc, char *argv[]) {
 
   int max = stoi(argv[1]);
   int numThreads = stoi(argv[2]);
- 
-  // making the complete array
   int sqrtMax = int(sqrt(max));
-  volatile int seed[max];
-  for(int i = 0; i < max; i++){
-      seed[i] = i+1;
-      // printf("Seed: %d\n", seed[i]);
+  
+  vector<int> seed;
+  vector<int> realseed;
+
+
+  //making the seed array
+  for(int i = 0; i < sqrtMax; i++){
+    seed.push_back(i+1);
   };
 
   seed[0]=-1;
   int unmarked = seed[1];
   int nextUnmarked = 0;
-  
-  thread *threads = new thread[numThreads];
-  volatile int *ptr=seed;
-  
   int bigChunk = max - sqrtMax;
   int smallChunks = bigChunk/numThreads;
-  int lBound =sqrtMax+1;
-  int hBound =lBound+smallChunks; 
+  int lBound =sqrtMax + 1;
+  int temp = lBound + smallChunks;
+  int temp2 = temp + lBound;
+  int hBound;
+  if (temp2 > max){
+    hBound = max;
+  } else {
+    hBound = temp;
+  };
+
+
   
-  // actually calculating the primes
   auto start_time = chrono::system_clock::now();
+
+  
+  // calculating the seed primes
   while (nextUnmarked<=sqrtMax){
       for(int j=pow(unmarked,2); j <= sqrtMax; j++){
           if(j%unmarked == 0){
               seed[j-1]=0-j;
-              // printf("%s\n", "hej!");
           };
       };
       bool nextUpdated = 0;
-      for(int index = unmarked; index <= sqrtMax; index++){
+      for(int index = unmarked; index < sqrtMax; index++){
           if(seed[index]>0){
               nextUnmarked=seed[index];
               unmarked=nextUnmarked;
               nextUpdated = 1;
-              // printf("Index: %d\n", index);
               break;
           };
       };
       if(!nextUpdated){
-          // printf("%s\n", "då!");
           break;
       };
   };
+  
 
-  for (int threadID = 0; threadID < numThreads; threadID++){
-      threads[threadID] = thread(findPrime, ptr, sqrtMax, lBound, hBound);
-      lBound=hBound+1;
-      if (threadID == numThreads-2){
-          hBound=max;
-      }else{
-          hBound=lBound+smallChunks;
-      };
+  // clean the seed vector
+  for (int i = 0; i < sqrtMax; i++){
+    if (seed[i] > 0){
+      realseed.push_back(seed[i]);
+    };
   };
 
-  for(int i = 0; i<numThreads; i++){
-      threads[i].join();
-  }
-  
-  //calculating the time
+
+  future<vector<int>> futures[numThreads];
+  for (int j = 0; j < numThreads; j++){
+    futures[j] = async(findPrime, realseed, sqrtMax, lBound, hBound);
+    lBound=hBound+1;
+    if (j == numThreads-2){
+      hBound = max;
+    } else {
+      hBound = lBound + smallChunks;
+    };
+  };
+
+  for(int j = 0; j < numThreads; j++){
+    vector<int> temp = futures[j].get();
+    realseed.insert(realseed.end(), temp.begin(), temp.end());
+  };
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-  // delete[] threads;
-  //findPrime(ptr, sqrtMax, sqrtMax+1, max);
-  // just to check the code
-  
-  int primeNumbers=0;
-  for(int i = 0; i < max; i++){
-      if(seed[i]>0){
-          primeNumbers++;   
-      } 
-  };
 
-  printf("Number of primes: %d\nRuntime: %f\n",primeNumbers, duration.count());
+  
+  printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
   return 0;
+
+
 };
