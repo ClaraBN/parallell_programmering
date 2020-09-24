@@ -132,9 +132,16 @@ int main(int argc, char *argv[]) {
   for (int j = 0; j < numThreads; j++){
     futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
   };
+
   // sum all the threads results into a result 
+  result = 0;
+  for (int j = 0; j < numThreads; j++){
+    double n = futures[j].get();
+    result = result + n;
+  };
 
   //calculating the runtime and write out tut to the terminal
+  cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << endl;
 
 
 
