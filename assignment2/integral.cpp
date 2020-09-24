@@ -62,9 +62,9 @@ int main(int argc, char *argv[]) {
   double trapzPerThread = trapz/numThreads;
   double intervalStep = 1/double(numThreads);
   double interval[int(trapzPerThread)];
-  interval[0] = 0;
   
   // saving the interval into an array
+  interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
     interval[i] = interval[i-1] + intervalStep;
   };
@@ -98,9 +98,19 @@ int main(int argc, char *argv[]) {
       
 
   // saving the interval into an array
-  for (int i = 1; i <= trapzPerThread; i++) {
-    double random = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
-    printf("%f\n", random);
+  interval[0] = 0;
+  for (int i = 1; i <= numThreads; i++) {
+    if(i = numThreads){
+      interval[i] = trapz - interval[i-1];
+      printf("%f\n", interval[i]);
+    }else if(interval[i-1] < (trapz-numThreads)){
+      double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
+      interval[i] = interval[i-1] + perc*trapz;
+      printf("%f\n", interval[i]);
+    }else{
+      interval[i] = 1;
+      printf("%f\n", interval[i]);
+    };
   };
   // starting timer
   //auto start_time = chrono::system_clock::now();
