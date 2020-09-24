@@ -155,7 +155,6 @@ int main(int argc, char *argv[]) {
   sum = 0;
   trapzMax = trapz-numThreads+1;
   trapezes[0]=trapzMax;
-  printf("\ntrapezes %d: %f\n",0, trapezes[0]);
 
   for (int i = 1; i < numThreads; i++) {
     trapezes[i] = 1.0;
