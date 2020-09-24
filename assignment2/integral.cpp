@@ -106,27 +106,19 @@ int main(int argc, char *argv[]) {
   for (int i = 1; i <= numThreads; i++) {
     double perc = ( rand()%10 )/100.0 + 0.01; // in the range 0.01 to 0.1
     int step = int(perc*(trapz-sum));
-    printf("\nStep: %d\n",step);
-    printf("Sum: %d\n", sum);
 
     if(i == numThreads){
-      intervals[i] = trapz - sum;
-      sum = sum + (trapz - sum);
-      printf("if: %d %d\n\n", i, intervals[i]);
-      printf("Sum: %d\n", sum);
+      intervals[i] = trapz;
 
     }else if ((sum+step) < trapzMax){
       intervals[i] = sum + step;
       sum = sum + step;
-      printf("else if: %d %d\n\n", i, intervals[i]);
-      printf("Sum: %d\n", sum);
 
     }else{
       intervals[i] = 1;
       sum = sum + 1;
-      printf("else: %d %d\n\n", i, intervals[i]);
-      printf("Sum: %d\n", sum);
     };
+    printf("\nintervals %d: %d\n",i, intervals[i]);
   };
   // starting timer
   //auto start_time = chrono::system_clock::now();
