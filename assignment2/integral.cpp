@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
   //calculating the runtime and write out tut to the terminal
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-  cout << "Even distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
+  cout << "\nEven distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
 
 
   /*   *************************************   */
