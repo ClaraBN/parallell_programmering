@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
       trapezes[i] = 1.0;
       sum = sum + 1.0;
     };
-    printf("\ntrapezes %d: %d\n",i, trapezes[i]);
+    printf("\ntrapezes %d: %f\n",i, trapezes[i]);
   };      
 
   // saving the intervals into an array
