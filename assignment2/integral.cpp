@@ -99,12 +99,12 @@ int main(int argc, char *argv[]) {
 
   // saving the interval into an array
   interval[0] = 0;
-  double sum = 0;
-  double trapzMax = trapz-numThreads+1;
+  int sum = 0;
+  int trapzMax = trapz-numThreads+1;
   
   for (int i = 1; i <= numThreads; i++) {
     double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
-    double step = perc*(trapz-sum);
+    int step = int(perc*(trapzMax-sum));
     printf("\nStep: %f\n",step);
     printf("Sum: %f\n", sum);
 
