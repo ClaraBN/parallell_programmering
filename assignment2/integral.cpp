@@ -116,8 +116,8 @@ int main(int argc, char *argv[]) {
       printf("Sum: %d\n", sum);
 
     }else if ((sum+step) < trapzMax){
-      intervals[i] = intervals[i-1] + step;
-      sum = sum + (intervals[i-1] + step);
+      intervals[i] = sum + step;
+      sum = sum + step;
       printf("else if: %d %d\n\n", i, intervals[i]);
       printf("Sum: %d\n", sum);
 
