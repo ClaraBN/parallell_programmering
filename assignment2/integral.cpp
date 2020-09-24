@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
     interval[i] = interval[i-1] + intervalStep;
   };
   // starting timer
-  auto start_time = chrono::system_clock::now();
+  auto start_time2 = chrono::system_clock::now();
 
   // for each thread run "compute"
   for (int j = 0; j < numThreads; j++){
@@ -141,8 +141,8 @@ int main(int argc, char *argv[]) {
   };
 
   //calculating the runtime and write out to the terminal
-  chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-  cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
+  chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time2);
+  cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
 
 
 
