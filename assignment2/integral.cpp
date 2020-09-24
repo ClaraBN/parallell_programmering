@@ -100,13 +100,17 @@ int main(int argc, char *argv[]) {
   // saving the interval into an array
   interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
+    double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
+    double step = perc*trapz;
+
     if(i == numThreads){
       interval[i] = trapz - interval[i-1];
       printf("%f\n", interval[i]);
-    }else if(interval[i-1] < (trapz-numThreads)){
-      double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
-      interval[i] = interval[i-1] + perc*trapz;
+
+    }else if(interval[i-1] + step < (trapz-numThreads-1)){
+      interval[i] = interval[i-1] + step;
       printf("%f\n", interval[i]);
+      
     }else{
       interval[i] = 1;
       printf("%f\n", interval[i]);
