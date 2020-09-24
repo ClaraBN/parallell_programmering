@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
   //calculating the runtime and write out tut to the terminal
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-  cout << "even distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
+  cout << "Even distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
 
 
   /*   *************************************   */
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
 
   //calculating the runtime and write out to the terminal
   chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time2);
-  cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
+  cout << "\nRandom distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
 
 
  /*   *****************************************************   */
