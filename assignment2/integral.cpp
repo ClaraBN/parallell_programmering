@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
   // saving the interval into an array
   interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
-    if(i = numThreads){
+    if(i == numThreads){
       interval[i] = trapz - interval[i-1];
       printf("%f\n", interval[i]);
     }else if(interval[i-1] < (trapz-numThreads)){
