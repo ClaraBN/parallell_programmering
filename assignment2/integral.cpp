@@ -162,6 +162,32 @@ int main(int argc, char *argv[]) {
     printf("trapezes %d: %f\n",i, trapezes[i]);
   }; 
 
+  // saving the intervals into an array
+  interval[0] = 0;
+  for (int i = 1; i <= numThreads; i++) {
+    interval[i] = interval[i-1] + intervalStep;
+  };
+
+  // starting timer
+  //auto start_time2 = chrono::system_clock::now();
+
+  // for each thread run "compute"
+  for (int j = 0; j < numThreads; j++){
+    futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
+  };
+
+  // sum all the threads results into a result 
+  result = 0;
+  for (int j = 0; j < numThreads; j++){
+    double n = futures[j].get();
+    result = result + n;
+  };
+
+  //calculating the runtime and write out to the terminal
+  //chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time2);
+  cout << "\nRandom distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
+
+
   //thread *threads = new thread[numThreads];
   //threads[0].join();
   //delete[] threads;
