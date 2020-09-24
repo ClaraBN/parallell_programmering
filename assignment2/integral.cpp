@@ -145,9 +145,9 @@ int main(int argc, char *argv[]) {
   cout << "\nRandom distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
 
 
- /*   *****************************************************   */
- /*      ALL IN ONE, DONT CARE- DISTRIBUTION OF TRAPEZES      */
- /*   *****************************************************   */
+ /*   ******************************************************   */
+ /*      ALL IN ONE, DONT CARE - DISTRIBUTION OF TRAPEZES      */
+ /*   ******************************************************   */
 
 
   // All trapezes in one thread in the beginning, almost. 
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
 
   for (int i = 1; i < numThreads; i++) {
     trapezes[i] = 1.0;
-    printf("trapezes %d: %f\n",i, trapezes[i]);
+    //printf("trapezes %d: %f\n",i, trapezes[i]);
   }; 
 
   // saving the intervals into an array
@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
   };
 
   // starting timer
-  //auto start_time2 = chrono::system_clock::now();
+  auto start_time3 = chrono::system_clock::now();
 
   // for each thread run "compute"
   for (int j = 0; j < numThreads; j++){
@@ -184,8 +184,8 @@ int main(int argc, char *argv[]) {
   };
 
   //calculating the runtime and write out to the terminal
-  //chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time2);
-  cout << "\nRandom distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
+  chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time3);
+  cout << "\nAll threads have only one trapeze, except the first who have all the rest: \n" << "Result: " << result << "\n" << "Duration: " << duration3.count() << endl;
 
 
   //thread *threads = new thread[numThreads];
