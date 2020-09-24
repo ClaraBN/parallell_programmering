@@ -98,7 +98,8 @@ int main(int argc, char *argv[]) {
       
 
   // saving the interval into an array
-  interval[0] = 0;
+  int intervals[numThreads+1];
+  intervals[0] = 0;
   int sum = 0;
   int trapzMax = trapz-numThreads+1;
   
@@ -109,19 +110,19 @@ int main(int argc, char *argv[]) {
     printf("Sum: %d\n", sum);
 
     if(i == numThreads){
-      interval[i] = trapz - sum;
+      intervals[i] = trapz - sum;
       sum = sum + (trapz - sum);
-      printf("%d: %d\n\n", i, interval[i]);
+      printf("%d: %d\n\n", i, intervals[i]);
 
     }else if ((sum+step) < trapzMax){
-      interval[i] = interval[i-1] + step;
-      sum = sum + (interval[i-1] + step);
-      printf("%d: %d\n\n", i, interval[i]);
+      intervals[i] = intervals[i-1] + step;
+      sum = sum + (intervals[i-1] + step);
+      printf("%d: %d\n\n", i, intervals[i]);
 
     }else{
-      interval[i] = 1;
+      intervals[i] = 1;
       sum = sum + 1;
-      printf("%d: %d\n\n", i, interval[i]);
+      printf("%d: %d\n\n", i, intervals[i]);
     };
   };
   // starting timer
