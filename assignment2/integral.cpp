@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 
 
   // Calculate how to distrubute trapz per threads "randomly-ish"
-  // each thread will have at least one trapezes
+  // each thread will have at least one trapeze
   double trapezes[numThreads];
   double sum = 0;
   double trapzMax = trapz-numThreads+1;
@@ -145,8 +145,22 @@ int main(int argc, char *argv[]) {
   cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
 
 
+ /*   *****************************************************   */
+ /*      ALL IN ONE, DONT CARE- DISTRIBUTION OF TRAPEZES      */
+ /*   *****************************************************   */
 
 
+  // All trapezes in one thread in the beginning, almost. 
+  // Each thread will have at least one trapeze
+  sum = 0;
+  trapzMax = trapz-numThreads+1;
+  trapezes[0]=trapzMax;
+  printf("\ntrapezes %d: %f\n",0, trapezes[0]);
+
+  for (int i = 1; i < numThreads; i++) {
+    trapezes[i] = 1.0;
+    printf("trapezes %d: %f\n",i, trapezes[i]);
+  }; 
 
   //thread *threads = new thread[numThreads];
   //threads[0].join();
