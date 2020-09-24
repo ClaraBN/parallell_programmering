@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
       trapezes[i] = 1.0;
       sum = sum + 1.0;
     };
-    printf("\ntrapezes %d: %f\n",i, trapezes[i]);
+    // printf("\ntrapezes %d: %f\n",i, trapezes[i]);
   };      
 
   // saving the intervals into an array
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
     interval[i] = interval[i-1] + intervalStep;
   };
   // starting timer
-  //auto start_time = chrono::system_clock::now();
+  auto start_time = chrono::system_clock::now();
 
   // for each thread run "compute"
   for (int j = 0; j < numThreads; j++){
@@ -140,8 +140,9 @@ int main(int argc, char *argv[]) {
     result = result + n;
   };
 
-  //calculating the runtime and write out tut to the terminal
-  cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << endl;
+  //calculating the runtime and write out to the terminal
+  chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
+  cout << "random distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
 
 
 
