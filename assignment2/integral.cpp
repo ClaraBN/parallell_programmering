@@ -61,12 +61,13 @@ int main(int argc, char *argv[]) {
   // Calculate how to distrubute trapz per threads
   double trapzPerThread = trapz/numThreads;
   double intervalStep = 1/double(numThreads);
-  double interval[int(trapzPerThread)];
   
   // saving the interval into an array
+  double interval[int(trapzPerThread)];
   interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
     interval[i] = interval[i-1] + intervalStep;
+    printf("interval: %f", interval[i]);
   };
 
   // starting timer
@@ -89,17 +90,14 @@ int main(int argc, char *argv[]) {
   cout << "even distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
 
 
-  /*   *************************   */
-  /*      RANDOM DISTRIBUTION      */
-  /*   *************************   */
+  /*   *************************************   */
+  /*      RANDOM DISTRIBUTION OF TRAPEZES      */
+  /*   *************************************   */
 
 
   // Calculate how to distrubute trapz per threads
-      
-
-  // saving the interval into an array
-  int intervals[numThreads+1];
-  intervals[0] = 0;
+  int trapezes[numThreads];
+  trapezes[0] = 0;
   int sum = 0;
   int trapzMax = trapz-numThreads+1;
   
@@ -108,23 +106,33 @@ int main(int argc, char *argv[]) {
     int step = int(perc*(trapz-sum));
 
     if(i == numThreads){
-      intervals[i] = trapz;
+      trapezes[i] = trapz;
 
     }else if ((sum+step) < trapzMax){
-      intervals[i] = sum + step;
+      trapezes[i] = sum + step;
       sum = sum + step;
 
     }else{
-      intervals[i] = 1;
+      trapezes[i] = 1;
       sum = sum + 1;
     };
-    printf("\nintervals %d: %d\n",i, intervals[i]);
+    printf("\ntrapezes %d: %d\n",i, trapezes[i]);
+  };      
+
+  // saving the random intervals into an array
+ 
+  interval[0] = 0;
+  for (int i = 1; i <= numThreads; i++) {
+    interval[i] = interval[i-1] + intervalStep;
+    printf("interval: %f", interval[i]);
   };
   // starting timer
   //auto start_time = chrono::system_clock::now();
 
   // for each thread run "compute"
-
+  //for (int j = 0; j < numThreads; j++){
+    //futures[j] = async(compute, interval[j], interval[j+1], trapzPerThread);
+  //};
   // sum all the threads results into a result 
 
   //calculating the runtime and write out tut to the terminal
