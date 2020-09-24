@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
 
   // saving the interval into an array
   for (int i = 1; i <= numThreads; i++) {
-    double random = (rand() % 100 + 1)/100; // in the range 0.01 to 1
+    double random = rand() % 100 + 1; // in the range 0.01 to 1
     printf("%f\n", random);
   };
   // starting timer
