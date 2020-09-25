@@ -16,7 +16,6 @@ vector<int> findPrime(vector<int> seed, int endSeed, int min, int max){
     chunk.push_back(i);
   };
   
-  
   for(unsigned int i = 0; i < seed.size(); i++){
     for (unsigned int j = 0; j < chunk.size(); j++){
       if (chunk[j]%seed[i] == 0 && chunk[j]>0){
@@ -32,23 +31,8 @@ vector<int> findPrime(vector<int> seed, int endSeed, int min, int max){
     };
   };
 
-  //**********    END   **********
-  //  int unmarked=0;
-  //  for(int seedEl=2; seedEl <= endSeed; seedEl++){
-  //      if(seedEl>0){
-  //          for(int chunkEl = min; chunkEl <= max; chunkEl++){
-  //              if(chunkEl%seedEl==0 && chunkEl>0){
-  //                  chunk[chunkEl-1]=-chunkEl;
-  //              };
-  //         };
-  //     };
-  // };
   return realchunk;
 };
-
-
-
-
 
 
 
@@ -145,7 +129,7 @@ int main(int argc, char *argv[]) {
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
 
   
-  printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
+  printf("Number of primes: %lu\ nRuntime: %f\n",realseed.size(), duration.count());
   return 0;
 
 
