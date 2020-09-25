@@ -9,13 +9,17 @@
 
 using namespace std;
 
-vector<int> findPrime(vector<int> seed, int endSeed, int min, int max){
+
+
+vector<int> findPrime(vector<int> seed, int min, int max){
   vector<int> chunk;
 
+  // creates vector of all numbers
   for (int i = min; i <= max; i++){
     chunk.push_back(i);
   };
-  
+
+  // mark the non-primes
   for(unsigned int i = 0; i < seed.size(); i++){
     for (unsigned int j = 0; j < chunk.size(); j++){
       if (chunk[j]%seed[i] == 0 && chunk[j]>0){
@@ -24,7 +28,10 @@ vector<int> findPrime(vector<int> seed, int endSeed, int min, int max){
     };
   };
 
+  // initiate final solution vector
   vector<int> realchunk;
+
+  // save only the primes
   for (unsigned int i = 0; i < chunk.size(); i++){
     if (chunk[i] > 0){
       realchunk.push_back(chunk[i]);
@@ -50,26 +57,32 @@ int main(int argc, char *argv[]) {
 
   int max = stoi(argv[1]);
   int numThreads = stoi(argv[2]);
+
+  // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
   int sqrtMax = int(sqrt(max));
-  
   vector<int> seed;
   vector<int> realseed;
 
 
-  //making the seed array
+  //making the seed vector
   for(int i = 0; i < sqrtMax; i++){
     seed.push_back(i+1);
   };
 
+  // initializing variables for the sequential part of the algorithm
   seed[0]=-1;
   int unmarked = seed[1];
   int nextUnmarked = 0;
+
+  // initializing variables for the parallel part of the algorithm
   int bigChunk = max - sqrtMax;
   int smallChunks = bigChunk/numThreads;
   int lBound =sqrtMax + 1;
   int temp = lBound + smallChunks;
   int temp2 = temp + lBound;
   int hBound;
+
+  // ensures good bounds when using low amount of threads
   if (temp2 > max){
     hBound = max;
   } else {
@@ -77,7 +90,7 @@ int main(int argc, char *argv[]) {
   };
 
 
-  
+  // start measuring time
   auto start_time = chrono::system_clock::now();
 
   
@@ -110,10 +123,12 @@ int main(int argc, char *argv[]) {
     };
   };
 
-
+  // initiate threads
   future<vector<int>> futures[numThreads];
+
+  // call threads
   for (int j = 0; j < numThreads; j++){
-    futures[j] = async(findPrime, realseed, sqrtMax, lBound, hBound);
+    futures[j] = async(findPrime, realseed, lBound, hBound);
     lBound=hBound+1;
     if (j == numThreads-2){
       hBound = max;
@@ -121,15 +136,19 @@ int main(int argc, char *argv[]) {
       hBound = lBound + smallChunks;
     };
   };
-
+  
+  // put the thread vectors into the final solution vector
   for(int j = 0; j < numThreads; j++){
     vector<int> temp = futures[j].get();
     realseed.insert(realseed.end(), temp.begin(), temp.end());
   };
+
+  // stop timing
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
 
-  
+  // print results
   printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
+  
   return 0;
 
 
