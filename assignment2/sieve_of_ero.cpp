@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
 
   
-  printf("Number of primes: %lu\ nRuntime: %f\n",realseed.size(), duration.count());
+  printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
   return 0;
 
 
