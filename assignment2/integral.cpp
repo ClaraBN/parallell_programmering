@@ -52,18 +52,20 @@ int main(int argc, char *argv[]) {
   // making all the threads
   future<double> futures[numThreads];
 
+  // Calculating the intervals needed between 0 and 1 depending on munber of threads
+  double intervalStep = 1/double(numThreads);
+
 
         /*        ************************         */
         /*           EQUAL DISTRIBUTION            */
         /*        ************************         */
 
 
-  // Calculate how to distrubute trapz per threads
+  // Calculate how to distrubute trapz per threads 
   double trapzPerThread = trapz/numThreads;
-  double intervalStep = 1/double(numThreads);
-  double interval[int(trapzPerThread)];
   
   // saving the interval into an array
+  double interval[int(trapzPerThread)];
   interval[0] = 0;
   for (int i = 1; i <= numThreads; i++) {
     interval[i] = interval[i-1] + intervalStep;
@@ -86,55 +88,103 @@ int main(int argc, char *argv[]) {
 
   //calculating the runtime and write out tut to the terminal
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-  cout << "even distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
+  cout << "\nEven distribution: \n" << "Result: " << result << "\n" << "Duration: " << duration.count() << endl;
 
 
-  /*   *************************   */
-  /*      RANDOM DISTRIBUTION      */
-  /*   *************************   */
+  /*   *************************************   */
+  /*      RANDOM DISTRIBUTION OF TRAPEZES      */
+  /*   *************************************   */
 
 
-  // Calculate how to distrubute trapz per threads
-      
-
-  // saving the interval into an array
-  interval[0] = 0;
+  // Calculate how to distrubute trapz per threads "randomly-ish"
+  // each thread will have at least one trapeze
+  double trapezes[numThreads];
   double sum = 0;
   double trapzMax = trapz-numThreads+1;
   
-  for (int i = 1; i <= numThreads; i++) {
-    double perc = ( rand()%100 )/100.0 + 0.01; // in the range 0.01 to 1
-    double step = perc*(trapzMax-sum);
-    printf("Step: %f\n",step);
-    printf("Sum: %f\n", sum);
+  for (int i = 0; i < numThreads; i++) {
+    double perc = ( rand()%10 )/100.0 + 0.01; // in the range 0.01 to 0.1
+    double step = int(perc*(trapz-sum));
 
     if(i == numThreads){
-      interval[i] = trapz - interval[i-1];
-      sum = sum + (trapz - interval[i-1]);
-      printf("%d: %f\n\n", i, interval[i]);
+      trapezes[i] = trapz;
 
     }else if ((sum+step) < trapzMax){
-      interval[i] = interval[i-1] + step;
-      sum = sum + (interval[i-1] + step);
-      printf("%d: %f\n\n", i, interval[i]);
+      trapezes[i] = sum + step;
+      sum = sum + step;
 
     }else{
-      interval[i] = 1;
-      sum = sum + 1;
-      printf("%d: %f\n\n", i, interval[i]);
+      trapezes[i] = 1.0;
+      sum = sum + 1.0;
     };
+    // printf("\ntrapezes %d: %f\n",i, trapezes[i]);
+  };      
+
+  // saving the intervals into an array
+  interval[0] = 0;
+  for (int i = 1; i <= numThreads; i++) {
+    interval[i] = interval[i-1] + intervalStep;
   };
   // starting timer
-  //auto start_time = chrono::system_clock::now();
+  auto start_time2 = chrono::system_clock::now();
 
   // for each thread run "compute"
+  for (int j = 0; j < numThreads; j++){
+    futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
+  };
 
   // sum all the threads results into a result 
+  result = 0;
+  for (int j = 0; j < numThreads; j++){
+    double n = futures[j].get();
+    result = result + n;
+  };
 
-  //calculating the runtime and write out tut to the terminal
+  //calculating the runtime and write out to the terminal
+  chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time2);
+  cout << "\nRandom distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
 
 
+ /*   ******************************************************   */
+ /*      ALL IN ONE, DONT CARE - DISTRIBUTION OF TRAPEZES      */
+ /*   ******************************************************   */
 
+
+  // Almost al trapezes is in the first thread 
+  // Each thread will have at least one trapeze
+  sum = 0;
+  trapzMax = trapz-numThreads+1;
+  trapezes[0]=trapzMax;
+
+  for (int i = 1; i < numThreads; i++) {
+    trapezes[i] = 1.0;
+    //printf("trapezes %d: %f\n",i, trapezes[i]);
+  }; 
+
+  // saving the intervals into an array
+  interval[0] = 0;
+  for (int i = 1; i <= numThreads; i++) {
+    interval[i] = interval[i-1] + intervalStep;
+  };
+
+  // starting timer
+  auto start_time3 = chrono::system_clock::now();
+
+  // for each thread run "compute"
+  for (int j = 0; j < numThreads; j++){
+    futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
+  };
+
+  // sum all the threads results into a result 
+  result = 0;
+  for (int j = 0; j < numThreads; j++){
+    double n = futures[j].get();
+    result = result + n;
+  };
+
+  //calculating the runtime and write out to the terminal
+  chrono::duration<double> duration3 = (chrono::system_clock::now() - start_time3);
+  cout << "\nAll threads have only one trapeze, except the first who have all the rest: \n" << "Result: " << result << "\n" << "Duration: " << duration3.count() << endl;
 
 
   //thread *threads = new thread[numThreads];
