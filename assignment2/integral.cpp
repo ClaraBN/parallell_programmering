@@ -9,15 +9,17 @@
 
 using namespace std;
 
-
 double compute(double xStart, double xEnd, double tpt) {
 
   double area = 0;
   double areaTemp;
 
+  // Calculating how to divide up the interval by number of trapezes per thread (tpt)
+  // Setting the x-values
   double inc = (xEnd - xStart)/tpt;
   double x0 = xStart;
   double x1 = x0 + inc;
+
   double y0;
   double y1;
   double square;
@@ -26,14 +28,20 @@ double compute(double xStart, double xEnd, double tpt) {
   for (int i = 0; i < tpt; i++) {
     y0 = 4/(1 + pow(x0,2));
     y1 = 4/(1 + pow(x1,2));
+
+    // Calculating the trapeze
     square = (x1-x0)*y1;
     triangle = ((x1-x0)*(y0-y1))/2;
     areaTemp = square + triangle;
+
+    // Suming all trapezes areas togheter
     area = area + areaTemp;
+
+    //Updating the x-values
     x0 = x1;
     x1 = x0 + inc;
   };
-
+  // Returning the complete area calculated for this interval
   return area;
 };
 
