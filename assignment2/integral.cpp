@@ -20,11 +20,13 @@ double compute(double xStart, double xEnd, double tpt) {
   double x0 = xStart;
   double x1 = x0 + inc;
 
+  // initializing function values and partial area variables
   double y0;
   double y1;
   double square;
   double triangle;
 
+  // calculating are for tpt trapezes
   for (int i = 0; i < tpt; i++) {
     y0 = 4/(1 + pow(x0,2));
     y1 = 4/(1 + pow(x1,2));
@@ -41,6 +43,7 @@ double compute(double xStart, double xEnd, double tpt) {
     x0 = x1;
     x1 = x0 + inc;
   };
+  
   // Returning the complete area calculated for this interval
   return area;
 };
@@ -68,7 +71,7 @@ int main(int argc, char *argv[]) {
   // making all the threads
   future<double> futures[numThreads];
 
-  // Calculating the intervals needed between 0 and 1 depending on munber of threads
+  // Calculating the intervals needed between 0 and 1 depending on number of threads
   double intervalStep = 1/double(numThreads);
 
 
@@ -77,7 +80,7 @@ int main(int argc, char *argv[]) {
         /*        ************************         */
 
 
-  // Calculate how to distrubute trapz per threads 
+  // Calculate how to distrubute trapezes per threads 
   double trapzPerThread = trapz/numThreads;
   
   // saving the interval into an array
@@ -90,7 +93,7 @@ int main(int argc, char *argv[]) {
   // starting timer
   auto start_time = chrono::system_clock::now();
 
-  // for each thread run "compute"
+  // for each interval compute the area of that interval
   for (int j = 0; j < numThreads; j++){
     futures[j] = async(compute, interval[j], interval[j+1], trapzPerThread);
   };
@@ -133,7 +136,6 @@ int main(int argc, char *argv[]) {
       trapezes[i] = 1.0;
       sum = sum + 1.0;
     };
-    //printf("\ntrapezes %d: %f\n",i, trapezes[i]);
   };      
 
   // saving the intervals into an array
@@ -144,7 +146,7 @@ int main(int argc, char *argv[]) {
   // starting timer
   auto start_time2 = chrono::system_clock::now();
 
-  // for each thread run "compute"
+  // for each interval compute the area
   for (int j = 0; j < numThreads; j++){
     futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
   };
@@ -175,7 +177,6 @@ int main(int argc, char *argv[]) {
 
   for (int i = 1; i < numThreads; i++) {
     trapezes[i] = 1.0;
-    //printf("trapezes %d: %f\n",i, trapezes[i]);
   }; 
 
   // saving the intervals into an array
@@ -187,7 +188,7 @@ int main(int argc, char *argv[]) {
   // starting timer
   auto start_time3 = chrono::system_clock::now();
 
-  // for each thread run "compute"
+  // for each interval compute the area
   for (int j = 0; j < numThreads; j++){
     futures[j] = async(compute, interval[j], interval[j+1], trapezes[j]);
   };
