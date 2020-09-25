@@ -43,12 +43,10 @@ public:
   }
 
 
-  
   void tatasLock() {
     do {
       while (locked) continue;
     } while (locked.exchange(true));
-    return;
   }
 
   void tatasUnlock(){

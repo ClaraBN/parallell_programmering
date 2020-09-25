@@ -10,20 +10,28 @@
 using namespace std;
 
 
-double compute(double x0, double x1, double tpt) {
+double compute(double xStart, double xEnd, double tpt) {
 
-  double area;
+  double area = 0;
   double areaTemp;
 
-  double inc = (x1 - x0)/tpt;
-  double x = x0;
-  double y;
+  double inc = (xEnd - xStart)/tpt;
+  double x0 = xStart;
+  double x1 = x0 + inc;
+  double y0;
+  double y1;
+  double square;
+  double triangle;
 
   for (int i = 0; i < tpt; i++) {
-    x = x + inc;
-    y = 4/(1 + pow(x,2));
-    areaTemp = inc*y;
+    y0 = 4/(1 + pow(x0,2));
+    y1 = 4/(1 + pow(x1,1));
+    square = (x1-x0)*y1;
+    triangle = ((x1-x0)*(y0-y1))/2;
+    areaTemp = square + triangle;
     area = area + areaTemp;
+    x0 = x1;
+    x1 = x0 + inc;
   };
 
   return area;
@@ -38,7 +46,7 @@ int main(int argc, char *argv[]) {
   if (argc != 3) {
     char h[] = {'-','h'};
     if (strcmp(argv[1], h) == 0) {
-      printf("%s\n","First argument is the number of threads (integer), the second argument is number of trapezes(integer) and trapezes should be a multiple of threads");
+      printf("%s\n","First argument is the number of threads (integer), the second argument is number of trapezes(integer) and trapezes should be a multiple of threads. For the random distribution to work the number of trapezes needs to be larger than 100");
       return 0;
     };
     printf("%s\n", "invalid input. try -h for help");
@@ -105,9 +113,9 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < numThreads; i++) {
     double perc = ( rand()%10 )/100.0 + 0.01; // in the range 0.01 to 0.1
     double step = int(perc*(trapz-sum));
-
+    
     if(i == numThreads){
-      trapezes[i] = trapz;
+      trapezes[i] = trapz-sum;
 
     }else if ((sum+step) < trapzMax){
       trapezes[i] = sum + step;
@@ -117,7 +125,7 @@ int main(int argc, char *argv[]) {
       trapezes[i] = 1.0;
       sum = sum + 1.0;
     };
-    // printf("\ntrapezes %d: %f\n",i, trapezes[i]);
+    //printf("\ntrapezes %d: %f\n",i, trapezes[i]);
   };      
 
   // saving the intervals into an array
@@ -142,8 +150,9 @@ int main(int argc, char *argv[]) {
 
   //calculating the runtime and write out to the terminal
   chrono::duration<double> duration2 = (chrono::system_clock::now() - start_time2);
+  if (trapz >= 100){
   cout << "\nRandom distribution trapezes: \n" << "Result: " << result << "\n" << "Duration: " << duration2.count() << endl;
-
+  };
 
  /*   ******************************************************   */
  /*      ALL IN ONE, DONT CARE - DISTRIBUTION OF TRAPEZES      */
