@@ -25,7 +25,7 @@ double compute(double xStart, double xEnd, double tpt) {
 
   for (int i = 0; i < tpt; i++) {
     y0 = 4/(1 + pow(x0,2));
-    y1 = 4/(1 + pow(x1,1));
+    y1 = 4/(1 + pow(x1,2));
     square = (x1-x0)*y1;
     triangle = ((x1-x0)*(y0-y1))/2;
     areaTemp = square + triangle;
