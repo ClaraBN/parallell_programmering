@@ -136,13 +136,14 @@ int main (int argc, char * argv[]) {
 				}
 			}
 	  	
-
-		#pragma omp barrier
+		#pragma omp master 
+		{
+		// #pragma omp barrier
 		#ifdef OUTPUT
 		print_to_pgm(current, N, t+1);
 		#endif
-		#pragma omp master 
-		{
+
+		
 		
 			  
 			//Swap current array with previous array 
@@ -150,7 +151,7 @@ int main (int argc, char * argv[]) {
 			current = previous;
 			previous = swap;
 		}
-		#pragma omp barrier
+		//#pragma omp barrier
 	}
 	}
 	  
