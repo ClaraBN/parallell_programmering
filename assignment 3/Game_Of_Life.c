@@ -113,19 +113,19 @@ int main (int argc, char * argv[]) {
 	omp_set_num_threads(NUM_THREADS);
 	gettimeofday(&ts,NULL);
 	printf("parallel");
-	#pragma omp parallel
-	{
-		int id = omp_get_thread_num();
-	    int max;
-	    int numRows = (N-2)/omp_get_num_threads();
-	    if (id == omp_get_num_threads() - 1){
-	      max = N-1;
-	    } else {
-	      max = (id+1)*numRows+1;
-	    };
-	    int min = id*numRows+1;
-	    
-		for (t = 0 ; t < T ; t++) {
+	for (t = 0 ; t < T ; t++) {
+		#pragma omp parallel
+		{
+			int id = omp_get_thread_num();
+	    	int max;
+	    	int numRows = (N-2)/omp_get_num_threads();
+	    	if (id == omp_get_num_threads() - 1){
+	      		max = N-1;
+	    	} else {
+	      		max = (id+1)*numRows+1;
+	    	};
+	    	int min = id*numRows+1;
+
 			for (i = min; i < max; i++) {
 				for (j = 1 ; j < N-1 ; j++) {
 					nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
@@ -137,10 +137,7 @@ int main (int argc, char * argv[]) {
 						current[i][j] = 0;
 				}
 			}
-		printf("barrier");
-	  	#pragma omp barrier
-		#pragma omp master 
-		{
+		}
 			// #pragma omp barrier
 			#ifdef OUTPUT
 			print_to_pgm(current, N, t+1);
@@ -149,10 +146,6 @@ int main (int argc, char * argv[]) {
 			swap = current;
 			current = previous;
 			previous = swap;
-			printf("master");
-		}
-		#pragma omp barrier
-	}
 	}
 	  
 	gettimeofday(&tf,NULL);
