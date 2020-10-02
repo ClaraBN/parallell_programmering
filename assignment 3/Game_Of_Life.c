@@ -71,6 +71,7 @@ static void print_to_pgm(int ** array, int N, int t) {
 #endif
 
 int main (int argc, char * argv[]) {
+	printf("main");
 	int N;	 			//array dimensions
 	int T;
 	int numThreads;
@@ -111,6 +112,7 @@ int main (int argc, char * argv[]) {
 
 	omp_set_num_threads(NUM_THREADS);
 	gettimeofday(&ts,NULL);
+	printf("parallel");
 	#pragma omp parallel
 	{
 		int id = omp_get_thread_num();
@@ -135,6 +137,7 @@ int main (int argc, char * argv[]) {
 						current[i][j] = 0;
 				}
 			}
+		printf("barrier");
 	  	#pragma omp barrier
 		#pragma omp master 
 		{
