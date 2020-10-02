@@ -114,7 +114,7 @@ int main (int argc, char * argv[]) {
 	gettimeofday(&ts,NULL);
 	printf("parallel");
 	for (t = 0 ; t < T ; t++) {
-		#pragma omp parallel private(id, max, numRows, min, i, j)
+		#pragma omp parallel private(i, j)
 		{
 			int id = omp_get_thread_num();
 	    	int max;
