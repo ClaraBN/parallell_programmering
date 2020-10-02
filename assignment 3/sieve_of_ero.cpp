@@ -45,7 +45,6 @@ vector<int> findPrime(vector<int> seed, int min, int max){
 
 
 int main(int argc, char *argv[]) {
-  printf("hej");
   if (argc != 3) {
     char h[] = {'-','h'};
     if (strcmp(argv[1], h) == 0) {
@@ -117,7 +116,6 @@ int main(int argc, char *argv[]) {
       };
   };
   
-  printf("hej");
   // clean the seed vector
   for (int i = 0; i < sqrtMax; i++){
     if (seed[i] > 0){
@@ -125,11 +123,7 @@ int main(int argc, char *argv[]) {
     };
   };
 
-  printf("hej");
   omp_set_num_threads(NUM_THREADS);
-
-
-  printf("hej");
 
   vector<int> realseedCopy = realseed; 
   
@@ -151,10 +145,10 @@ int main(int argc, char *argv[]) {
       realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
   }
 
-for (unsigned int i = 0; i < realseed.size(); i++) {
-  printf("%d ", realseed[i]);
- }
- cout << "\n";
+// for (unsigned int i = 0; i < realseed.size(); i++) {
+ //  printf("%d ", realseed[i]);
+ // }
+ // cout << "\n";
 
 
  
@@ -168,7 +162,7 @@ for (unsigned int i = 0; i < realseed.size(); i++) {
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
 
   // print results
-//printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
+  printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
   
   return 0;
 
