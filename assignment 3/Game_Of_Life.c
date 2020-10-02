@@ -151,7 +151,7 @@ int main (int argc, char * argv[]) {
 			current = previous;
 			previous = swap;
 		}
-		#pragma omp barrier
+		//#pragma omp barrier
 	}
 	}
 	  
