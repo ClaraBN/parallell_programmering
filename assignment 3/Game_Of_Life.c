@@ -25,9 +25,9 @@ rm *pgm\n\
 static int ** allocate_array(int N) {
 	int ** array;
 	int i, j;
-	array = malloc(N * sizeof(int*));
+	array = malloc(N * sizeof(int*));  // siezeof (int*)
 	for (i = 0; i < N ; i++)
-		array[i] = malloc(N * sizeof(int));
+	  array[i] = malloc(N * sizeof(int));  //siezeof (int)
 	for (i = 0; i < N ; i++)
 		for (j = 0; j < N ; j++)
 			array[i][j] = 0;
@@ -94,6 +94,8 @@ int main (int argc, char * argv[]) {
 #define NUM_THREADS numThreads
 	}
 
+
+
 	/*Allocate and initialize matrices*/
 	current = allocate_array(N);			//allocate array for current time step
 	previous = allocate_array(N); 			//allocate array for previous time step
@@ -109,9 +111,20 @@ int main (int argc, char * argv[]) {
 
 	omp_set_num_threads(NUM_THREADS);
 	gettimeofday(&ts,NULL);
+	#pragma omp parallel
+	  {
+	    int id = omp_get_thread_num();
+	    int max;
+	    int numRows = (N-2)/omp_get_num_threads();
+	    if (id == omp_get_num_threads() - 1){
+	      max = N-1;
+	    } else {
+	      max = (id+1)*numRows+1;
+	    };
+	    int min = id*numRows+1;
+	    
 	for (t = 0 ; t < T ; t++) {
-	  #pragma omp for collapse(2)
-	  for (i = 1 ; i < N-1 ; i++)
+	    for (i = min; i < max; i++)
 			for (j = 1 ; j < N-1 ; j++) {
 				nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
 					+ previous[i][j-1] + previous[i][j+1] \
@@ -121,16 +134,23 @@ int main (int argc, char * argv[]) {
 				else 
 					current[i][j] = 0;
 			}
-	
+	  
+	  	#pragma omp barrier
 		#ifdef OUTPUT
 		print_to_pgm(current, N, t+1);
 		#endif
+
+#pragma omp master {	  
 		//Swap current array with previous array 
 		swap = current;
 		current = previous;
 		previous = swap;
+	}
+	}
+	  
 
 	}
+	  }
 	gettimeofday(&tf,NULL);
 	time = (tf.tv_sec-ts.tv_sec)+(tf.tv_usec-ts.tv_usec)*0.000001;
 
