@@ -136,22 +136,19 @@ int main (int argc, char * argv[]) {
 				}
 			}
 	  	#pragma omp barrier
-		#pragma omp single 
+		#pragma omp master 
 		{
-		// #pragma omp barrier
-		#ifdef OUTPUT
-		print_to_pgm(current, N, t+1);
-		#endif
-
-		
-		
-			  
+			// #pragma omp barrier
+			#ifdef OUTPUT
+			print_to_pgm(current, N, t+1);
+			#endif  
 			//Swap current array with previous array 
 			swap = current;
 			current = previous;
 			previous = swap;
+			printf("master");
 		}
-		//#pragma omp barrier
+		#pragma omp barrier
 	}
 	}
 	  
