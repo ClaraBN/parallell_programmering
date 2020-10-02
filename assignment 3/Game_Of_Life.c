@@ -151,6 +151,7 @@ int main (int argc, char * argv[]) {
 			previous = swap;
 		}
 	}
+	}
 	  
 	gettimeofday(&tf,NULL);
 	time = (tf.tv_sec-ts.tv_sec)+(tf.tv_usec-ts.tv_usec)*0.000001;
@@ -163,8 +164,3 @@ int main (int argc, char * argv[]) {
 	#endif
 	return 0;
 }
-
-
-
-
-
