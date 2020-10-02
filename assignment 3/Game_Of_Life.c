@@ -91,7 +91,7 @@ int main (int argc, char * argv[]) {
 		N = atoi(argv[1]);
 		T = atoi(argv[2]);
 		numThreads = atoi(argv[3]);
-#define NUM_THREADS numThreads
+		#define NUM_THREADS numThreads
 	}
 
 
@@ -112,8 +112,8 @@ int main (int argc, char * argv[]) {
 	omp_set_num_threads(NUM_THREADS);
 	gettimeofday(&ts,NULL);
 	#pragma omp parallel
-	  {
-	    int id = omp_get_thread_num();
+	{
+		int id = omp_get_thread_num();
 	    int max;
 	    int numRows = (N-2)/omp_get_num_threads();
 	    if (id == omp_get_num_threads() - 1){
@@ -123,29 +123,30 @@ int main (int argc, char * argv[]) {
 	    };
 	    int min = id*numRows+1;
 	    
-	for (t = 0 ; t < T ; t++) {
-	    for (i = min; i < max; i++)
-			for (j = 1 ; j < N-1 ; j++) {
-				nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
+		for (t = 0 ; t < T ; t++) {
+			for (i = min; i < max; i++) {
+				for (j = 1 ; j < N-1 ; j++) {
+					nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
 					+ previous[i][j-1] + previous[i][j+1] \
 					+ previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
-				if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
-					current[i][j] = 1;
-				else 
-					current[i][j] = 0;
+					if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
+						current[i][j] = 1;
+					else 
+						current[i][j] = 0;
+				}
 			}
-	  
-	  	#pragma omp barrier
+	  	
+		#pragma omp barrier
 		#ifdef OUTPUT
 		print_to_pgm(current, N, t+1);
 		#endif
-
-#pragma omp master {	  
-		//Swap current array with previous array 
-		swap = current;
-		current = previous;
-		previous = swap;
-	}
+		
+		#pragma omp master {	  
+			//Swap current array with previous array 
+			swap = current;
+			current = previous;
+			previous = swap;
+		}
 	}
 	  
 
