@@ -136,7 +136,7 @@ int main (int argc, char * argv[]) {
 				}
 			}
 	  	#pragma omp barrier
-		#pragma omp master 
+		#pragma omp single 
 		{
 		// #pragma omp barrier
 		#ifdef OUTPUT
