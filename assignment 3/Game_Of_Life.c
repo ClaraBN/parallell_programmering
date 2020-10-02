@@ -135,7 +135,7 @@ int main (int argc, char * argv[]) {
 						current[i][j] = 0;
 				}
 			}
-	  	
+	  	#pragma omp barrier
 		#pragma omp master 
 		{
 		// #pragma omp barrier
@@ -151,7 +151,7 @@ int main (int argc, char * argv[]) {
 			current = previous;
 			previous = swap;
 		}
-		//#pragma omp barrier
+		#pragma omp barrier
 	}
 	}
 	  
