@@ -149,9 +149,6 @@ int main (int argc, char * argv[]) {
 		}
 	}
 	  
-
-	}
-	  }
 	gettimeofday(&tf,NULL);
 	time = (tf.tv_sec-ts.tv_sec)+(tf.tv_usec-ts.tv_usec)*0.000001;
 
