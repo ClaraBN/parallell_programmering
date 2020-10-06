@@ -25,9 +25,9 @@ rm *pgm\n\
 static int ** allocate_array(int N) {
 	int ** array;
 	int i, j;
-	array = malloc(N * sizeof(int*));  // siezeof (int*)
+	array = malloc(N * sizeof(int*));  
 	for (i = 0; i < N ; i++)
-	  array[i] = malloc(N * sizeof(int));  //siezeof (int)
+	  array[i] = malloc(N * sizeof(int)); 
 	for (i = 0; i < N ; i++)
 		for (j = 0; j < N ; j++)
 			array[i][j] = 0;
@@ -71,11 +71,9 @@ static void print_to_pgm(int ** array, int N, int t) {
 #endif
 
 int main (int argc, char * argv[]) {
-	printf("main");
 	int N;	 			//array dimensions
-	int T;
-	int numThreads;
-	//time steps
+	int T;                          //timesteps
+	int numThreads;                 //number of threads
 	int ** current, ** previous; 	//arrays - one for current timestep, one for previous timestep
 	int ** swap;			//array pointer
 	int t, i, j, nbrs;		//helper variables
@@ -85,14 +83,14 @@ int main (int argc, char * argv[]) {
 
 	/*Read input arguments*/
 	if (argc != 4) {
-		fprintf(stderr, "Usage: ./exec ArraySize TimeSteps\n");
+		fprintf(stderr, "Usage: ./exec ArraySize TimeSteps numberOfThreads\n");
 		exit(-1);
 	}
 	else {
 		N = atoi(argv[1]);
 		T = atoi(argv[2]);
 		numThreads = atoi(argv[3]);
-		#define NUM_THREADS numThreads
+#define NUM_THREADS numThreads                       
 	}
 
 
@@ -109,53 +107,65 @@ int main (int argc, char * argv[]) {
 
 	/*Game of Life*/
 
-
+	// set number of threads
 	omp_set_num_threads(NUM_THREADS);
+
+	//start timing
 	gettimeofday(&ts,NULL);
-	printf("parallel");
+
+      
 	for (t = 0 ; t < T ; t++) {
+
+	  //start the parallel region
 		#pragma omp parallel private(i, j)
 		{
-			int id = omp_get_thread_num();
-	    	int max;
-	    	int numRows = (N-2)/omp_get_num_threads();
-	    	if (id == omp_get_num_threads() - 1){
-	      		max = N-1;
-	    	} else {
-	      		max = (id+1)*numRows+1;
-	    	};
-	    	int min = id*numRows+1;
 
-			for (i = min; i < max; i++) {
-				for (j = 1 ; j < N-1 ; j++) {
-					nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
-					+ previous[i][j-1] + previous[i][j+1] \
-					+ previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
-					if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
-						current[i][j] = 1;
-					else 
-						current[i][j] = 0;
-				}
-			}
+		  // store the id of the thread
+		  int id = omp_get_thread_num();
+
+		  // find the row index this thread should compute to
+		  int max;
+		  int numRows = (N-2)/omp_get_num_threads();
+		  if (id == omp_get_num_threads() - 1){
+		    max = N-1;
+		  } else {
+		    max = (id+1)*numRows+1;
+		  };
+
+		  // the row index this thread should compute for
+		  int min = id*numRows+1;
+
+		  // computing the game of life for elements from row min to row max
+		  for (i = min; i < max; i++) {
+		    for (j = 1 ; j < N-1 ; j++) {
+		      nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
+			+ previous[i][j-1] + previous[i][j+1]		\
+			+ previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
+		      if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
+			current[i][j] = 1;
+		      else 
+			current[i][j] = 0;
+		    }
+		  }
 		}
-			// #pragma omp barrier
-			#ifdef OUTPUT
-			print_to_pgm(current, N, t+1);
-			#endif  
-			//Swap current array with previous array 
-			swap = current;
-			current = previous;
-			previous = swap;
+		       
+#ifdef OUTPUT
+		print_to_pgm(current, N, t+1);
+#endif  
+		//Swap current array with previous array 
+		swap = current;
+		current = previous;
+		previous = swap;
 	}
 	  
 	gettimeofday(&tf,NULL);
 	time = (tf.tv_sec-ts.tv_sec)+(tf.tv_usec-ts.tv_usec)*0.000001;
-
+	
 	free_array(current, N);
 	free_array(previous, N);
 	printf("GameOfLife: Size %d Steps %d Time %lf\n", N, T, time);
-	#ifdef OUTPUT
+#ifdef OUTPUT
 	system(FINALIZE);
-	#endif
+#endif
 	return 0;
 }

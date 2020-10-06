@@ -78,22 +78,9 @@ int main(int argc, char *argv[]) {
   // initializing variables for the parallel part of the algorithm
   int bigChunk = max - sqrtMax;
   int smallChunks = bigChunk/numThreads;
-  //int lBound =sqrtMax + 1;
-  //int temp = lBound + smallChunks;
-  //int temp2 = temp + lBound;
-  //int hBound;
-
-  // ensures good bounds when using low amount of threads
-  // if (temp2 > max){
-  //  hBound = max;
-  //} else {
-  //  hBound = temp;
-  //};
-
 
   // start measuring time
   auto start_time = chrono::system_clock::now();
-
   
   // calculating the seed primes
   while (nextUnmarked<=sqrtMax){
@@ -115,48 +102,46 @@ int main(int argc, char *argv[]) {
           break;
       };
   };
+
   
-  // clean the seed vector
+  // clean up the seed vector
   for (int i = 0; i < sqrtMax; i++){
     if (seed[i] > 0){
       realseed.push_back(seed[i]);
     };
   };
 
+  
+  // set the number of threads
   omp_set_num_threads(NUM_THREADS);
 
-  vector<int> realseedCopy = realseed; 
+  //copy the realseed vector for threads to read
+  vector<int> realseedCopy = realseed;
+
   
+  //start parallel region
 #pragma omp parallel 
   {
-    int hBound;
+    //find id for the thread
     int id = omp_get_thread_num();
 
+    //define bounds that this thread should copute primes between
+    int hBound;
     int lBound = (sqrtMax +1) + (smallChunks+1)*id;
     if (id == (NUM_THREADS - 1)) {
       hBound = max;
     } else {
     hBound = lBound + smallChunks;
     };
-    
+
+    //calculate the primes
     vector<int> resultVector = findPrime(realseedCopy, lBound, hBound);
-    
+
+
+    // critical section for adding the computed primes into realseed
    #pragma omp critical 
       realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
   }
-
-// for (unsigned int i = 0; i < realseed.size(); i++) {
- //  printf("%d ", realseed[i]);
- // }
- // cout << "\n";
-
-
- 
-  // // put the thread vectors into the final solution vector
-  // for(int j = 0; j < numThreads; j++){
-  //   vector<int> temp = futures[j].get();
-  //   realseed.insert(realseed.end(), temp.begin(), temp.end());
-  // };
 
   // stop timing
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
