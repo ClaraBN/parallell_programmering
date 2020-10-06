@@ -85,15 +85,12 @@ int main (int argc, char * argv[]) {
 	if (argc != 4) {
 		fprintf(stderr, "Usage: ./exec ArraySize TimeSteps numberOfThreads\n");
 		exit(-1);
-	}
-	else {
+	} else {
 		N = atoi(argv[1]);
 		T = atoi(argv[2]);
 		numThreads = atoi(argv[3]);
-#define NUM_THREADS numThreads                       
-	}
-
-
+		#define NUM_THREADS numThreads                       
+	};
 
 	/*Allocate and initialize matrices*/
 	current = allocate_array(N);			//allocate array for current time step
@@ -112,11 +109,10 @@ int main (int argc, char * argv[]) {
 
 	//start timing
 	gettimeofday(&ts,NULL);
-
       
 	for (t = 0 ; t < T ; t++) {
-
-	  //start the parallel region
+		
+		//start the parallel region
 		#pragma omp parallel private(i, j)
 		{
 
@@ -142,16 +138,15 @@ int main (int argc, char * argv[]) {
 			+ previous[i][j-1] + previous[i][j+1]		\
 			+ previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
 		      if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
-			current[i][j] = 1;
+			  	current[i][j] = 1;
 		      else 
-			current[i][j] = 0;
+				current[i][j] = 0;
 		    }
 		  }
 		}
-		       
-#ifdef OUTPUT
+		#ifdef OUTPUT
 		print_to_pgm(current, N, t+1);
-#endif  
+		#endif  
 		//Swap current array with previous array 
 		swap = current;
 		current = previous;
@@ -164,8 +159,9 @@ int main (int argc, char * argv[]) {
 	free_array(current, N);
 	free_array(previous, N);
 	printf("GameOfLife: Size %d Steps %d Time %lf\n", N, T, time);
-#ifdef OUTPUT
+	
+	#ifdef OUTPUT
 	system(FINALIZE);
-#endif
+	#endif
 	return 0;
 }

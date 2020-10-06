@@ -7,9 +7,7 @@
 
 // compile using export OMP_NUM_THREADS=4
 
-
 using namespace std;
-
 
 // creates an N times N array containing values from 0 to 9
 static int ** create_array(int N) {
@@ -27,7 +25,6 @@ static int ** create_array(int N) {
   return array;
 };
 
-
 // creates an N times N array containing zeroes
 void zero_array(int **array, int N){
     for (int i = 0; i < N; i++){
@@ -37,7 +34,6 @@ void zero_array(int **array, int N){
   };
 };
 
-
 // deallocates an array of size N
 void delete_array(int **array, int N) {
   for (int  i = 0; i < N; i++) {
@@ -45,8 +41,6 @@ void delete_array(int **array, int N) {
   };
   delete [] array;
 };
-
-
 
 int main(int argc, char *argv[]){
   if (argc != 2) {
@@ -61,7 +55,6 @@ int main(int argc, char *argv[]){
   
   int dim = stoi(argv[1]);
 
-
   // creates one matrix factor filled with values form 0 to 9 and initialize result vector
   int **a1 = create_array(dim);
   int **result = create_array(dim);
@@ -69,7 +62,6 @@ int main(int argc, char *argv[]){
   // the other matrix factor for the multiplication. This is the same matrix as a1 but can be changed.
   int **a2 = a1;
   
-
 
 
   //*******************************************\\
@@ -82,18 +74,17 @@ int main(int argc, char *argv[]){
   // start timing for case i
   auto start_time_1 = chrono::system_clock::now();
 
-
   //start parallel region
-#pragma omp parallel
+  #pragma omp parallel
   {
     
     //parallelize first loop but not the others
-#pragma omp for
+    #pragma omp for
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
-	for (int k = 0; k < dim; k++) {
-	  result[i][j] += a1[i][k]*a2[k][j];
-	};
+        for (int k = 0; k < dim; k++) {
+          result[i][j] += a1[i][k]*a2[k][j];
+	      };
       };
     };
   }
@@ -105,29 +96,27 @@ int main(int argc, char *argv[]){
   printf("Matrix multiplication case i: dimension of matrix: %d, runtime: %f \n",dim, duration_1.count());
 
 
+
   //*********************************************\\
   //*************** case ii *********************\\
   //*********************************************\\
-  
 
   // set result matrix to zero matrix
   zero_array(result, dim);
-
   
   // start timing for case ii
   auto start_time_2 = chrono::system_clock::now();
-
 
   //start parallel region
     #pragma omp parallel
   {
     //parallelize the first two loops but not the third
-#pragma omp for collapse(2)
+    #pragma omp for collapse(2)
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
-	for (int k = 0; k < dim; k++) {
-	  result[i][j] += a1[i][k]*a2[k][j];
-	};
+        for (int k = 0; k < dim; k++) {
+          result[i][j] += a1[i][k]*a2[k][j];
+	      };
       };
     };
   }
@@ -139,29 +128,28 @@ int main(int argc, char *argv[]){
   printf("Matrix multiplication case ii: dimension of matrix: %d, runtime: %f \n",dim, duration_2.count());
 
 
+
   //****************************************************\\
   //******************** case iii **********************\\
   //****************************************************\\
 
-
   // set result matrix to zero matrix
   zero_array(result, dim);
-
 
   // start timing for case iii
   auto start_time_3 = chrono::system_clock::now();
 
   // start parallel region
-#pragma omp parallel
+  #pragma omp parallel
   {
 
     //parallelize all three loops
-#pragma omp for collapse(3)
+    #pragma omp for collapse(3)
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
-	for (int k = 0; k < dim; k++) {
-	result[i][j] += a1[i][k]*a2[k][j];
-	};
+        for (int k = 0; k < dim; k++) {
+          result[i][j] += a1[i][k]*a2[k][j];
+	      };
       };
     };
   }
@@ -172,12 +160,9 @@ int main(int argc, char *argv[]){
   // print results
   printf("Matrix multiplication case iii: dimension of matrix: %d, runtime: %f \n",dim, duration_3.count());
 
-
-
   // deallocate arrays
   delete_array(a1, dim);
   delete_array(result, dim);
-
   
   return 0;
 };

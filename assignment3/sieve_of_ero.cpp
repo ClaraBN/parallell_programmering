@@ -10,8 +10,6 @@
 
 using namespace std;
 
-
-
 vector<int> findPrime(vector<int> seed, int min, int max){
   vector<int> chunk;
 
@@ -38,7 +36,6 @@ vector<int> findPrime(vector<int> seed, int min, int max){
       realchunk.push_back(chunk[i]);
     };
   };
-
   return realchunk;
 };
 
@@ -120,12 +117,12 @@ int main(int argc, char *argv[]) {
 
   
   //start parallel region
-#pragma omp parallel 
+  #pragma omp parallel 
   {
     //find id for the thread
     int id = omp_get_thread_num();
 
-    //define bounds that this thread should copute primes between
+    //define bounds that this thread should compute primes between
     int hBound;
     int lBound = (sqrtMax +1) + (smallChunks+1)*id;
     if (id == (NUM_THREADS - 1)) {
@@ -139,8 +136,8 @@ int main(int argc, char *argv[]) {
 
 
     // critical section for adding the computed primes into realseed
-   #pragma omp critical 
-      realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
+    #pragma omp critical 
+    realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
   }
 
   // stop timing
@@ -150,6 +147,4 @@ int main(int argc, char *argv[]) {
   printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
   
   return 0;
-
-
 };
