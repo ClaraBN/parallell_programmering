@@ -3,13 +3,12 @@
 int main(int argc, char *argv[])
 {
 char name[MPI_MAX_PROCESSOR_NAME];
-int len;
-int i = MPI_Get_processor_name(name, &len);
-int rank, size;
+int rank, size, len;
 
 MPI_Init(&argc, &argv);
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 MPI_Comm_size(MPI_COMM_WORLD, &size);
+MPI_Get_processor_name(name, &len);
 printf("I am %d of %d on %s\n", rank, size, name);
 MPI_Finalize();
 return 0;
