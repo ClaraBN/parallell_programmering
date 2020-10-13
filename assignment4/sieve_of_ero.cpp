@@ -113,6 +113,7 @@ int main(int argc, char *argv[]) {
   
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &numThreads);
+   
   if(rank == 0){
      // initializing variables for the parallel part of the algorithm
     int bigChunk = max - sqrtMax;
@@ -127,6 +128,7 @@ int main(int argc, char *argv[]) {
     }
   }
   else if(rank!=0){
+    int max, sqrtMax, smallChunks,realSeedSize;
     MPI_Recv(max,1,MPI_INT,0,0,MPI_COMM_WORLD);
     MPI_Recv(sqrtMax,1,MPI_INT,0,0,MPI_COMM_WORLD);
     MPI_Recv(smallChunks,1,MPI_INT,0,0,MPI_COMM_WORLD);
