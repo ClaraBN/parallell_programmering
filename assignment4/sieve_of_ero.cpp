@@ -113,11 +113,11 @@ int main(int argc, char *argv[]) {
   
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &numThreads);
-   
+  int smallChunks;
   if(rank == 0){
      // initializing variables for the parallel part of the algorithm
     int bigChunk = max - sqrtMax;
-    int smallChunks = bigChunk/numThreads;
+    smallChunks = bigChunk/numThreads;
     int realSeedSize = realseedCopy.size();
     for(int dest = 1; dest<numThreads; dest++){
           MPI_Send(&max,1,MPI_INT,dest,0,MPI_COMM_WORLD);
@@ -127,8 +127,8 @@ int main(int argc, char *argv[]) {
           MPI_Send(&realseedCopy[0],realSeedSize,MPI_INT,dest,0,MPI_COMM_WORLD);
     }
   }
-  else if(rank!=0){
-    int max, sqrtMax, smallChunks,realSeedSize;
+  else{
+    //int max, sqrtMax,realSeedSize;
     MPI_Recv(&max,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&sqrtMax,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&smallChunks,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
@@ -139,11 +139,11 @@ int main(int argc, char *argv[]) {
   //#pragma omp parallel 
     //find id for the thread
     //int id = omp_get_thread_num();
-
+    
     //define bounds that this thread should compute primes between
     int hBound;
-    int lBound = (sqrtMax +1) + (smallChunks+1)*id;
-    if (id == (numThreads - 1)) {
+    int lBound = (sqrtMax +1) + (smallChunks+1)*rank;
+    if (rank == (numThreads - 1)) {
       hBound = max;
     } else {
     hBound = lBound + smallChunks;
