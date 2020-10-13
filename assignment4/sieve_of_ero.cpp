@@ -129,11 +129,11 @@ int main(int argc, char *argv[]) {
   }
   else if(rank!=0){
     int max, sqrtMax, smallChunks,realSeedSize;
-    MPI_Recv(max,1,MPI_INT,0,0,MPI_COMM_WORLD);
-    MPI_Recv(sqrtMax,1,MPI_INT,0,0,MPI_COMM_WORLD);
-    MPI_Recv(smallChunks,1,MPI_INT,0,0,MPI_COMM_WORLD);
-    MPI_Recv(realSeedSize,1,MPI_INT,0,0,MPI_COMM_WORLD);
-    MPI_Recv(realseedCopy[0],realSeedSize,MPI_INT,0,0,MPI_COMM_WORLD);
+    MPI_Recv(max,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(sqrtMax,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(smallChunks,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(realSeedSize,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(realseedCopy[0],realSeedSize,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
   }
   //start parallel region
   //#pragma omp parallel 
@@ -162,8 +162,8 @@ int main(int argc, char *argv[]) {
     else{
       realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       for(int sender = 1; sender<numThreads; sender++){
-        MPI_Recv(resultVectorSize,1,MPI_INT,sender,0,MPI_COMM_WORLD);
-        MPI_Recv(resultVector[0],resultVectorSize,MPI_INT,sender,0,MPI_COMM_WORLD);
+        MPI_Recv(resultVectorSize,1,MPI_INT,sender,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+        MPI_Recv(resultVector[0],resultVectorSize,MPI_INT,sender,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
         realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       }
     }
