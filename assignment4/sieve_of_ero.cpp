@@ -120,8 +120,8 @@ int main(int argc, char *argv[]) {
     int smallChunks = bigChunk/numThreads;
     int realSeedSize = realseedCopy.size();
     for(int dest = 1; dest<numThreads; dest++){
-          MPI_Send(max*,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(sqrtMax*,1,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(&max,1,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(*sqrtMax ,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(smallChunks,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(realSeedSize,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(realseedCopy[0],realSeedSize,MPI_INT,dest,0,MPI_COMM_WORLD);
