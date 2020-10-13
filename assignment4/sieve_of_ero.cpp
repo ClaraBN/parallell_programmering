@@ -108,12 +108,12 @@ int main(int argc, char *argv[]) {
 
   //copy the realseed vector for threads to read
   vector<int> realseedCopy = realseed;
-  int rank, size, len;
+  int rank, size, smallChunks, realSeedSize;
   MPI_Init(&argc, &argv);
   
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &numThreads);
-  int smallChunks;
+
   if(rank == 0){
      // initializing variables for the parallel part of the algorithm
     int bigChunk = max - sqrtMax;
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
     }
   }
   else{
-    //int max, sqrtMax,realSeedSize;
+    //int max, sqrtMax,;
     MPI_Recv(&max,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&sqrtMax,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&smallChunks,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
