@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
     int bigChunk = max - sqrtMax;
     int smallChunks = bigChunk/numThreads;
     int realSeedSize = realseedCopy.size();
-    for(dest = 1; dest<numThreads; dest++){
+    for(int dest = 1; dest<numThreads; dest++){
           MPI_Send(*max,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(*sqrtMax,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(*smallChunks,1,MPI_INT,dest,0,MPI_COMM_WORLD);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
     }
     else{
       realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
-      for(sender = 1; sender<numThreads; sender++){
+      for(int sender = 1; sender<numThreads; sender++){
         MPI_Recv(*resultVectorSize,1,MPI_INT,sender,0,MPI_COMM_WORLD);
         MPI_Recv(*resultVector[0],resultVectorSize,MPI_INT,sender,0,MPI_COMM_WORLD);
         realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
