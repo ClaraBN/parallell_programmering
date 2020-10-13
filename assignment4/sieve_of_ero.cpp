@@ -158,6 +158,7 @@ int main(int argc, char *argv[]) {
       MPI_Send(*resultVector[0],resultVectorSize,MPI_INT,0,0,MPI_COMM_WORLD);
     }
     else{
+      realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       for(sender = 1; sender<numThreads; sender++){
         MPI_Recv(*resultVectorSize,1,MPI_INT,sender,0,MPI_COMM_WORLD);
         MPI_Recv(*resultVector[0],resultVectorSize,MPI_INT,sender,0,MPI_COMM_WORLD);
