@@ -121,10 +121,10 @@ int main(int argc, char *argv[]) {
     int realSeedSize = realseedCopy.size();
     for(int dest = 1; dest<numThreads; dest++){
           MPI_Send(&max,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(*sqrtMax ,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(smallChunks,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(realSeedSize,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(realseedCopy[0],realSeedSize,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(&sqrtMax ,1,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(&smallChunks,1,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(&realSeedSize,1,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(&realseedCopy[0],realSeedSize,MPI_INT,dest,0,MPI_COMM_WORLD);
     }
   }
   else if(rank!=0){
@@ -156,8 +156,8 @@ int main(int argc, char *argv[]) {
     // critical section for adding the computed primes into realseed
     //#pragma omp critical 
     if(rank!=0){
-      MPI_Send(resultVectorSize,1,MPI_INT,0,0,MPI_COMM_WORLD);
-      MPI_Send(resultVector[0],resultVectorSize,MPI_INT,0,0,MPI_COMM_WORLD);
+      MPI_Send(&resultVectorSize,1,MPI_INT,0,0,MPI_COMM_WORLD);
+      MPI_Send(&resultVector[0],resultVectorSize,MPI_INT,0,0,MPI_COMM_WORLD);
     }
     else{
       realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
