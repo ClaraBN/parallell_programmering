@@ -167,12 +167,12 @@ int main(int argc, char *argv[]) {
         realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       }
     }
-    MPI_Finalize();
   // stop timing
   chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
-
-  // print results
-  printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
-  
+  if(rank==0){
+    // print results
+    printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
+  }
+  MPI_Finalize();
   return 0;
 };
