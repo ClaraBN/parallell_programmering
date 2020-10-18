@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
     int nextUnmarked = 0;
 
     // start measuring time
-    auto start_time = chrono::system_clock::now();
+    double start_time = Wtime();
   
     // calculating the seed primes
     while (nextUnmarked<=sqrtMax){
@@ -174,8 +174,10 @@ int main(int argc, char *argv[]) {
     }
 
   if(rank==0){
-      // stop timing
-    chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
+    // stop timing
+    double stop_time = Wtime();
+    
+    double duration = (stop_time - start_time);
     // print results
     printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
   }
