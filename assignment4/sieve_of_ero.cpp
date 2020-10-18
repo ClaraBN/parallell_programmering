@@ -5,6 +5,7 @@
 # include <chrono>
 # include <vector>
 # include <mpi.h>
+# include <typeinfo>
 
 using namespace std;
 
@@ -125,6 +126,7 @@ int main(int argc, char *argv[]) {
     int bigChunk = max - sqrtMax;
     smallChunks = bigChunk/numThreads;
     int realSeedSize = realseedCopy.size();
+    cout << typeid(realSeedSize).name() << endl;
     for(int dest = 1; dest<numThreads; dest++){
           MPI_Send(&max,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(&sqrtMax ,1,MPI_INT,dest,1,MPI_COMM_WORLD);
