@@ -54,68 +54,69 @@ int main(int argc, char *argv[]) {
   int numThreads = stoi(argv[2]); //inte använda?
   //#define NUM_THREADS numThreads
 
-  // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
-  int sqrtMax = int(sqrt(max));
-  vector<int> seed;
-  vector<int> realseed;
-
-
-  //making the seed vector
-  for(int i = 0; i < sqrtMax; i++){
-    seed.push_back(i+1);
-  };
-
-  // initializing variables for the sequential part of the algorithm
-  seed[0]=-1;
-  int unmarked = seed[1];
-  int nextUnmarked = 0;
-
-  // start measuring time
-  auto start_time = chrono::system_clock::now();
-  
-  // calculating the seed primes
-  while (nextUnmarked<=sqrtMax){
-      for(int j=pow(unmarked,2); j <= sqrtMax; j++){
-          if(j%unmarked == 0){
-              seed[j-1]=0-j;
-          };
-      };
-      bool nextUpdated = 0;
-      for(int index = unmarked; index < sqrtMax; index++){
-          if(seed[index]>0){
-              nextUnmarked=seed[index];
-              unmarked=nextUnmarked;
-              nextUpdated = 1;
-              break;
-          };
-      };
-      if(!nextUpdated){
-          break;
-      };
-  };
-
-  
-  // clean up the seed vector
-  for (int i = 0; i < sqrtMax; i++){
-    if (seed[i] > 0){
-      realseed.push_back(seed[i]);
-    };
-  };
-
-  
-  // set the number of threads
-  // omp_set_num_threads(NUM_THREADS);
-
-  //copy the realseed vector for threads to read
-  vector<int> realseedCopy = realseed;
   int rank, size, smallChunks, realSeedSize;
   MPI_Init(&argc, &argv);
   
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &numThreads);
+  
+  if (rank==0){
+    // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
+    int sqrtMax = int(sqrt(max));
+    vector<int> seed;
+    vector<int> realseed;
 
-  if(rank == 0){
-     // initializing variables for the parallel part of the algorithm
+
+    //making the seed vector
+    for(int i = 0; i < sqrtMax; i++){
+      seed.push_back(i+1);
+    };
+
+    // initializing variables for the sequential part of the algorithm
+    seed[0]=-1;
+    int unmarked = seed[1];
+    int nextUnmarked = 0;
+
+    // start measuring time
+    auto start_time = chrono::system_clock::now();
+  
+    // calculating the seed primes
+    while (nextUnmarked<=sqrtMax){
+        for(int j=pow(unmarked,2); j <= sqrtMax; j++){
+            if(j%unmarked == 0){
+                seed[j-1]=0-j;
+            };
+        };
+        bool nextUpdated = 0;
+        for(int index = unmarked; index < sqrtMax; index++){
+            if(seed[index]>0){
+                nextUnmarked=seed[index];
+                unmarked=nextUnmarked;
+                nextUpdated = 1;
+                break;
+            };
+        };
+        if(!nextUpdated){
+            break;
+        };
+    };
+
+  
+    // clean up the seed vector
+    for (int i = 0; i < sqrtMax; i++){
+      if (seed[i] > 0){
+        realseed.push_back(seed[i]);
+      };
+    };
+
+  
+    // set the number of threads
+    // omp_set_num_threads(NUM_THREADS);
+
+    //copy the realseed vector for threads to read
+    vector<int> realseedCopy = realseed;
+
+    // initializing variables for the parallel part of the algorithm
     int bigChunk = max - sqrtMax;
     smallChunks = bigChunk/numThreads;
     int realSeedSize = realseedCopy.size();
@@ -125,7 +126,7 @@ int main(int argc, char *argv[]) {
           MPI_Send(&smallChunks,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(&realSeedSize,1,MPI_INT,dest,0,MPI_COMM_WORLD);
           MPI_Send(&realseedCopy[0],realSeedSize,MPI_INT,dest,0,MPI_COMM_WORLD);
-    }
+     }
   }
   else{
     //int max, sqrtMax,;
@@ -135,8 +136,8 @@ int main(int argc, char *argv[]) {
     MPI_Recv(&realSeedSize,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&realseedCopy[0],realSeedSize,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
   }
-  //start parallel region
-  //#pragma omp parallel 
+    //start parallel region
+    //#pragma omp parallel 
     //find id for the thread
     //int id = omp_get_thread_num();
     
