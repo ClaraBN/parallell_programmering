@@ -62,15 +62,15 @@ int main(int argc, char *argv[]) {
   MPI_Comm_size(MPI_COMM_WORLD, &numThreads);
   
   int sqrtMax = int(sqrt(max));
-  vector<int> realseed;
-  vector<int> realseedCopy;
+
   double start_time;
 
   if (rank==0){
     // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
     
     vector<int> seed;
-    
+    vector<int> realseed;
+    vector<int> realseedCopy;
 
 
     //making the seed vector
@@ -136,7 +136,8 @@ int main(int argc, char *argv[]) {
      }
   }
   else{
-    //int max, sqrtMax,;
+    vector<int> realSeedCopy;
+    
     MPI_Recv(&max,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&sqrtMax,1,MPI_INT,0,1,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
     MPI_Recv(&smallChunks,1,MPI_INT,0,2,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
