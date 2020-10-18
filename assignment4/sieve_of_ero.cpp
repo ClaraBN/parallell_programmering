@@ -127,19 +127,19 @@ int main(int argc, char *argv[]) {
     int realSeedSize = realseedCopy.size();
     for(int dest = 1; dest<numThreads; dest++){
           MPI_Send(&max,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(&sqrtMax ,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(&smallChunks,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(&realSeedSize,1,MPI_INT,dest,0,MPI_COMM_WORLD);
-          MPI_Send(&realseedCopy[0],realSeedSize,MPI_INT,dest,0,MPI_COMM_WORLD);
+          MPI_Send(&sqrtMax ,1,MPI_INT,dest,1,MPI_COMM_WORLD);
+          MPI_Send(&smallChunks,1,MPI_INT,dest,2,MPI_COMM_WORLD);
+          MPI_Send(&realSeedSize,1,MPI_INT,dest,3,MPI_COMM_WORLD);
+          MPI_Send(&realseedCopy[0],realSeedSize,MPI_INT,dest,4,MPI_COMM_WORLD);
      }
   }
   else{
     //int max, sqrtMax,;
     MPI_Recv(&max,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-    MPI_Recv(&sqrtMax,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-    MPI_Recv(&smallChunks,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-    MPI_Recv(&realSeedSize,1,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-    MPI_Recv(&realseedCopy[0],realSeedSize,MPI_INT,0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(&sqrtMax,1,MPI_INT,0,1,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(&smallChunks,1,MPI_INT,0,2,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(&realSeedSize,1,MPI_INT,0,3,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+    MPI_Recv(&realseedCopy[0],realSeedSize,MPI_INT,0,4,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
   }
     //start parallel region
     //#pragma omp parallel 
@@ -162,14 +162,14 @@ int main(int argc, char *argv[]) {
     // critical section for adding the computed primes into realseed
     //#pragma omp critical 
     if(rank!=0){
-      MPI_Send(&resultVectorSize,1,MPI_INT,0,0,MPI_COMM_WORLD);
-      MPI_Send(&resultVector[0],resultVectorSize,MPI_INT,0,0,MPI_COMM_WORLD);
+      MPI_Send(&resultVectorSize,1,MPI_INT,0,5,MPI_COMM_WORLD);
+      MPI_Send(&resultVector[0],resultVectorSize,MPI_INT,0,6,MPI_COMM_WORLD);
     }
     else{
       realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       for(int sender = 1; sender<numThreads; sender++){
-        MPI_Recv(&resultVectorSize,1,MPI_INT,sender,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-        MPI_Recv(&resultVector[0],resultVectorSize,MPI_INT,sender,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+        MPI_Recv(&resultVectorSize,1,MPI_INT,sender,5,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+        MPI_Recv(&resultVector[0],resultVectorSize,MPI_INT,sender,6,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
         realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       }
     }
