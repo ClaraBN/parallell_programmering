@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
   int sqrtMax = int(sqrt(max));
   vector<int> realseed;
   vector<int> realseedCopy;
+  double start_time;
 
   if (rank==0){
     // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
@@ -82,7 +83,7 @@ int main(int argc, char *argv[]) {
     int nextUnmarked = 0;
 
     // start measuring time
-    double start_time = Wtime();
+    start_time = MPI_Wtime();
   
     // calculating the seed primes
     while (nextUnmarked<=sqrtMax){
@@ -175,11 +176,11 @@ int main(int argc, char *argv[]) {
 
   if(rank==0){
     // stop timing
-    double stop_time = Wtime();
+    double stop_time = MPI_Wtime();
     
     double duration = (stop_time - start_time);
     // print results
-    printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
+    printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration);
   }
   MPI_Finalize();
   return 0;
