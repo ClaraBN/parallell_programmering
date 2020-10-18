@@ -60,11 +60,16 @@ int main(int argc, char *argv[]) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &numThreads);
   
+  int sqrtMax = int(sqrt(max));
+  vector<int> realseed;
+  vector<int> realseedCopy;
+  auto start_time;
+
   if (rank==0){
     // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
-    int sqrtMax = int(sqrt(max));
+    
     vector<int> seed;
-    vector<int> realseed;
+    
 
 
     //making the seed vector
@@ -114,7 +119,7 @@ int main(int argc, char *argv[]) {
     // omp_set_num_threads(NUM_THREADS);
 
     //copy the realseed vector for threads to read
-    vector<int> realseedCopy = realseed;
+    realseedCopy = realseed;
 
     // initializing variables for the parallel part of the algorithm
     int bigChunk = max - sqrtMax;
@@ -168,9 +173,10 @@ int main(int argc, char *argv[]) {
         realseed.insert(realseed.end(), resultVector.begin(), resultVector.end());
       }
     }
-  // stop timing
-  chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
+
   if(rank==0){
+      // stop timing
+    chrono::duration<double> duration = (chrono::system_clock::now() - start_time);
     // print results
     printf("Number of primes: %lu\nRuntime: %f\n",realseed.size(), duration.count());
   }
