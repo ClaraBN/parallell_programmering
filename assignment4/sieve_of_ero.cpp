@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
   int sqrtMax = int(sqrt(max));
   vector<int> realseed;
   vector<int> realseedCopy;
-  auto start_time;
 
   if (rank==0){
     // initialize Max for sequential part of the algorithm, the seed vector containing all the elements, and the vector containing the primes. 
